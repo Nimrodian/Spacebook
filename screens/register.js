@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { TextInput, View, Text, StyleSheet, StatusBar, ScrollView, SafeAreaView, TouchableOpacity } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 
 //TO-DO list for this screen.
 //1. Implement some kind of scroll view (week 3 lab sheet), to scroll through posts 
@@ -17,8 +18,37 @@ class registerScreen extends Component {
   }
 
   login = async () => { 
-    console.log(this.state.emailAddress)
-    console.log(this.state.password)
+    //console.log(this.state.email_address)
+    //console.log(this.state.password)
+
+    return fetch('http://localhost:3333/api/1.0.0/login', 
+    {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        email: this.state.email_address,
+        password: this.state.password
+    })
+    })
+    .then((response) => {
+      if(response.status == 200){
+        return response.json()
+      }
+      else if(response.status == 400){
+        throw 'Failed validation';
+      }
+      else{
+        throw 'Something went wrong';
+      }
+    })
+    .then((responseJson) => {
+      console.log(responseJson);
+      //this.props.navigation.navigate('Login');
+    })
+    .catch((error) =>{
+      console.log(error);
+    })
+
     }
 
   register = async ()  => {
@@ -27,36 +57,38 @@ class registerScreen extends Component {
     console.log(this.state.first_name)
     console.log(this.state.last_name)
 
-    //body: JSON.stringify({
-         //first_name: this.state.first_name,
-         //last_name: this.state.last_name,
-         //email: this.state.email_address,
-         //password: this.state.password
-       //}) 
+    return fetch('http://localhost:3333/api/1.0.0/user/',
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type':'application/json'
+      },
+      body: JSON.stringify({
+        first_name: this.state.first_name,
+        last_name: this.state.last_name,
+        email: this.state.email_address,
+        password: this.state.password
+    })
+    })
 
-    return fetch('http://localhost:3333/api/1.0.0/user/1/',
-      {
-       method: 'GET',
-       headers: {'Content-Type':'application/json', 'X-Authorization':'cdb41ceb91e61185874a1e777a57fe56'}
-      })
-      .then((response) => {
-        if(response.status == 200){
-          return response.json()
-        }
-        else if(response.status == 400){
-          throw 'Failed validation';
-        }
-        else{
-          throw 'Something went wrong';
-        }
-      })
-      .then((responseJson) => {
-        console.log("User retrieved with ID: ", responseJson);
-        this.props.navigation.navigate('Login');
-      })
-      .catch((error) =>{
-        console.log(error);
-      })
+    .then((response) =>{
+      if(response.status == 201){
+        return response.json()
+      }
+      else if(response.status == 400){
+        throw 'Account already exists';
+      }
+      else{
+        throw 'Something unknown went wrong';
+      }
+    })
+    .then((responseJson) =>{
+      console.log('User created with ID: ', responseJson);
+      this.props.navigation.navigate('Home');
+    })
+    .catch((error) =>{
+      console.log(error)
+    })
   }
 
   goBack = () => {
@@ -66,6 +98,11 @@ class registerScreen extends Component {
   render(){
     return (
         <View style={styles.container}>
+          <LinearGradient
+          // Background Linear Gradient
+          colors={['rgba(0,0,0,0.8)', 'transparent']}
+          style={styles.background}
+          /> 
           <View>
               <Text style={styles.sillyText}> 
               Create a new account

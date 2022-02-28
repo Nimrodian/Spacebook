@@ -7,6 +7,7 @@ import 'react-native-gesture-handler';
 import loginScreen from './screens/login';
 import homeScreen from './screens/home';
 import registerScreen from './screens/register';
+import logoutScreen from './screens/logout';
 
 //TO-DO list notes etc
 //1. Make it so other screens can not be accessed until the user has
@@ -19,11 +20,30 @@ class App extends Component {
   render(){
     return (
       <NavigationContainer>
-        <Drawer.Navigator>
-          <Drawer.Screen name="Login" component={loginScreen} />
-          <Drawer.Screen name="Home" component={homeScreen} />
-          <Drawer.Screen name='Register' component={registerScreen} />
-        </Drawer.Navigator>
+        <Stack.Navigator>
+          <Stack.Screen 
+            name="Login" 
+            component={loginScreen} 
+          />
+          <Stack.Screen 
+            name="Home" 
+            component={homeScreen} 
+            options={{headerShown: false}}
+          />
+          <Stack.Screen 
+            name='Register' 
+            component={registerScreen} 
+          />
+          <Stack.Screen 
+            name='Logout' 
+            component={logoutScreen} 
+          />
+          {/* <Drawer.Screen name='Logout' component={logoutScreen} options={{
+            drawerItemStyle: {
+              display: "none",
+            }
+          }}/> */}
+        </Stack.Navigator>
       </NavigationContainer>
     );
   }
