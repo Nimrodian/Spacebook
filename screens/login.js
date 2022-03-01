@@ -77,6 +77,8 @@ export default class loginScreen extends Component {
       return null;
     }
 
+    console.log(sessionToken);
+
     return fetch("http://localhost:3333/api/1.0.0/user/" + id, {
       method: 'GET',
       headers: {
@@ -117,7 +119,7 @@ export default class loginScreen extends Component {
           source={require('../images/fixedMoon.png')}
           style={{ width: 150, height: 150, marginTop: 175}}/>
         <Text style={styles.welcome}>
-          Welcome to SpaceBook™2 </Text>
+          Welcome to SpaceBook™ </Text>
         <View>
           <TextInput 
             style={styles.loginFields} 
@@ -147,8 +149,8 @@ export default class loginScreen extends Component {
         </View>
         <View>
             <Image 
-            source={require('../images/bigMoon.png')}
-            style={{ width: 600, height: 600, flex: 1, marginTop: 60}}/>
+            source={require('../images/bigMoon1.png')}
+            style={{ width: 920, height: 180, marginTop: 60}}/>
         </View>
       </View> 
     );

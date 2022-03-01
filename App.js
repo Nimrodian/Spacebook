@@ -8,12 +8,13 @@ import loginScreen from './screens/login';
 import homeScreen from './screens/home';
 import registerScreen from './screens/register';
 import logoutScreen from './screens/logout';
+import profileScreen from './screens/profile';
+
 
 //TO-DO list notes etc
 //1. Make it so other screens can not be accessed until the user has
 //   been authenticated by logging in.
 
-const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
 
 class App extends Component {
@@ -38,11 +39,10 @@ class App extends Component {
             name='Logout' 
             component={logoutScreen} 
           />
-          {/* <Drawer.Screen name='Logout' component={logoutScreen} options={{
-            drawerItemStyle: {
-              display: "none",
-            }
-          }}/> */}
+          <Stack.Screen 
+            name='Profile' 
+            component={profileScreen} 
+          />
         </Stack.Navigator>
       </NavigationContainer>
     );
