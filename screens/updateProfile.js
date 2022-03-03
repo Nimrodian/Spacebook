@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { TextInput, View, Text, StyleSheet, StatusBar, ScrollView, SafeAreaView, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 //TO-DO list for this screen.
 //1. Implement some kind of scroll view (week 3 lab sheet), to scroll through posts 
 //2. Posting to an API
 
-class registerScreen extends Component {
+class updateProfile extends Component {
   constructor(props){
     super(props);
     this.state = {
@@ -17,50 +18,32 @@ class registerScreen extends Component {
     }
   }
 
-  login = async () => { 
-    //console.log(this.state.email_address)
-    //console.log(this.state.password)
+  updateProfile = async ()  => {
+    let id = await AsyncStorage.getItem('userID');
+    let sessionToken = await AsyncStorage.getItem('token');
 
-    return fetch('http://localhost:3333/api/1.0.0/login', 
-    {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({
-        email: this.state.email_address,
-        password: this.state.password
-    })
-    })
-    .then((response) => {
-      if(response.status == 200){
-        return response.json()
-      }
-      else if(response.status == 400){
-        throw 'Failed validation';
-      }
-      else{
-        throw 'Something went wrong';
-      }
-    })
-    .then((responseJson) => {
-      console.log(responseJson);
-      //this.props.navigation.navigate('Login');
-    })
-    .catch((error) =>{
-      console.log(error);
-    })
-
+    if(sessionToken != null){
+      sessionToken = sessionToken.replaceAll('"', '');
+    }
+    else{
+      return null;
     }
 
-  register = async ()  => {
+    this.setState({
+      userID: id, 
+      token: sessionToken
+    })
+
     console.log(this.state.email_address)
     console.log(this.state.password)
     console.log(this.state.first_name)
     console.log(this.state.last_name)
 
-    return fetch('http://localhost:3333/api/1.0.0/user/',
+    return fetch("http://localhost:3333/api/1.0.0/user/" + id,
     {
-      method: 'POST',
+      method: 'PATCH',
       headers: {
+        'X-Authorization': sessionToken,
         'Content-Type':'application/json'
       },
       body: JSON.stringify({
@@ -72,8 +55,9 @@ class registerScreen extends Component {
     })
 
     .then((response) =>{
-      if(response.status == 201){
-        return response.json()
+      if(response.status == 200){
+        // return response.json()
+        return response;
       }
       else if(response.status == 400){
         throw 'Account already exists';
@@ -83,12 +67,16 @@ class registerScreen extends Component {
       }
     })
     .then((responseJson) =>{
-      console.log('User created with ID: ', responseJson);
-      this.props.navigation.navigate('Login');
+      //console.log(responseJson);
+      // this.props.navigation.reset({ //Resets the screen stacks so the users profile is updated instantly rather than having to logout and then back in.
+      //   index: 0,
+      //   routes: [{name: 'Profile'}]
+      // })
+      this.props.navigation.navigate('Profile');
     })
-    .catch((error) =>{
-      console.log(error)
-    })
+    // .catch((error) =>{
+    //   console.log(error)
+    // })
   }
 
   goBack = () => {
@@ -105,7 +93,7 @@ class registerScreen extends Component {
           /> 
           <View>
               <Text style={styles.sillyText}> 
-              Create a new account
+              Update your profile information
               </Text>
           </View>
           <View style={{flexDirection: 'row', alignItems: '', justifyContent: 'center'}}>
@@ -147,15 +135,11 @@ class registerScreen extends Component {
               </View>
               <View>
                 <TouchableOpacity
-                  onPress={this.register}>
-                  <Text style={styles.sillyText}>Register</Text>
+                  onPress={this.updateProfile}>
+                  <Text style={styles.sillyText}>Save</Text>
                 </TouchableOpacity>
               </View>
               <View>
-                <TouchableOpacity
-                onPress={this.goBack}>
-                  <Text style={{fontFamily: 'helvetica', color: 'white', margin: 5}}>Already have an account?</Text>
-                </TouchableOpacity>
               </View>
         </View>
       );
@@ -207,4 +191,4 @@ const styles = StyleSheet.create({
     }
   })
 
-export default registerScreen;
+export default updateProfile;

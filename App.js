@@ -9,6 +9,7 @@ import homeScreen from './screens/home';
 import registerScreen from './screens/register';
 import logoutScreen from './screens/logout';
 import profileScreen from './screens/profile';
+import updateProfile from './screens/updateProfile';
 
 
 //TO-DO list notes etc
@@ -42,6 +43,10 @@ class App extends Component {
           <Stack.Screen 
             name='Profile' 
             component={profileScreen} 
+          />
+          <Stack.Screen
+            name = "Update Profile"
+            component={updateProfile}
           />
         </Stack.Navigator>
       </NavigationContainer>
