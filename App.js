@@ -11,6 +11,7 @@ import profileScreen from './screens/profile';
 import updateProfile from './screens/updateProfile';
 import searchScreen from './screens/Search';
 import otherProfileScreen from './screens/otherProfile';
+import updatePictureScreen from './screens/updatePicture';
 
 //TO-DO list notes etc
 //1. Make it so other screens can not be accessed until the user has
@@ -60,6 +61,10 @@ class App extends Component {
           <Stack.Screen
             name = "otherProfile"
             component = {otherProfileScreen}
+          />
+          <Stack.Screen 
+            name = "uploadPhoto"
+            component = {updatePictureScreen}
           />
         </Stack.Navigator>
       </NavigationContainer>

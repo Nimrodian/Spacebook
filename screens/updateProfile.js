@@ -83,6 +83,10 @@ class updateProfile extends Component {
     this.props.navigation.navigate('Login');
   }
 
+  updatePicture = () => {
+    this.props.navigation.navigate('uploadPhoto');
+  }
+
   render(){
     return (
         <View style={styles.container}>
@@ -137,6 +141,12 @@ class updateProfile extends Component {
                 <TouchableOpacity
                   onPress={this.updateProfile}>
                   <Text style={styles.sillyText}>Save</Text>
+                </TouchableOpacity>
+              </View>
+              <View>
+                <TouchableOpacity
+                  onPress={this.updatePicture}>
+                  <Text style={styles.sillyText}>Upload a profile picture</Text>
                 </TouchableOpacity>
               </View>
               <View>
