@@ -42,7 +42,11 @@ class homeScreen extends Component {
   }
 
   myProfile = () => {
-    this.props.navigation.navigate('Profile')
+    this.props.navigation.navigate('Profile');
+  }
+
+  search = () => {
+    this.props.navigation.navigate('Search');
   }
 
     render(){
@@ -58,7 +62,13 @@ class homeScreen extends Component {
                   <Text style={styles.sillyText}>My profile</Text>
             </TouchableOpacity>
           </View>
-          <View style={{height: 750, width: 440, padding: 20}}>
+          <View style={{flexDirection: 'row', alignItems: '', justifyContent: 'center'}}>
+            <TouchableOpacity style={styles.button}
+                onPress={this.search}>
+                  <Text style={styles.sillyText}>Search</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={{height: 680, width: 440, padding: 20}}>
           <ScrollView style={styles.scrollView}>
             <Text style={styles.sillyText}> 
             Lorem ipsum dolor sit amet, consectetur 

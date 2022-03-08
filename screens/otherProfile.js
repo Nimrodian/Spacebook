@@ -2,11 +2,16 @@ import React, { Component } from 'react';
 import { TouchableOpacity, View, Image, Text, StyleSheet, StatusBar, ScrollView, SafeAreaView, FlatList, TextInput } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
+import { RotateInUpLeft } from 'react-native-reanimated';
+import { NativeScreenNavigationContainer } from 'react-native-screens';
+import { NavigationContext } from 'react-navigation';
+import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
+import 'react-native-gesture-handler';
 
 //JOE MAKE SURE TO PROPERLY READ UP ON ASHES VERSION IF DIDMOUNT ETC. https://github.com/ash-williams/expo-week3-lecture-demos/blob/master/async-storage/components/login.js
 
-class profileScreen extends Component {
-    
+class otherProfile extends Component {
     state = {
         firstName: null,
         lastName: null,
@@ -15,13 +20,16 @@ class profileScreen extends Component {
         profilePicture: null
     }
 
+
     componentDidMount (){
         this.getData();
         this.getProfilePic();
+        console.log(this.props.route.params.profileID);
     }
 
     getData = async () => {
-        let id = await AsyncStorage.getItem('userID');
+        //let id = await AsyncStorage.getItem('userID');
+        let id = this.props.route.params.profileID;
         let sessionToken = await AsyncStorage.getItem('token');
 
         if(sessionToken != null){
@@ -68,44 +76,36 @@ class profileScreen extends Component {
     }
 
     getProfilePic = async () => {
-      let id = await AsyncStorage.getItem('userID');
-      let sessionToken = await AsyncStorage.getItem('token');
-
-      if(sessionToken != null){
-        sessionToken = sessionToken.replaceAll('"', '');
-      }
-      else{
-        return null;
-      }
-
-      this.setState({
-        userID: id, 
-        token: sessionToken
-      })
-      return fetch("http://localhost:3333/api/1.0.0/user/" + id + "/photo", {
-        method: 'GET',
-        headers: {
-            'X-Authorization': sessionToken
+        let id = await AsyncStorage.getItem('userID');
+        let sessionToken = await AsyncStorage.getItem('token');
+  
+        if(sessionToken != null){
+          sessionToken = sessionToken.replaceAll('"', '');
         }
-    })
-    .then((res) => {
-      return res.blob();
-    })
-    .then((resBlob) => {
-      let pic = URL.createObjectURL(resBlob);
-      this.setState({
-        profilePicture: pic
+        else{
+          return null;
+        }
+  
+        this.setState({
+          userID: id, 
+          token: sessionToken
+        })
+        return fetch("http://localhost:3333/api/1.0.0/user/" + id + "/photo", {
+          method: 'GET',
+          headers: {
+              'X-Authorization': sessionToken
+          }
       })
-    })
-    }
-
-    updateProfile = () =>{
-        this.props.navigation.navigate('Update Profile');
-    }
-
-    backHome = () => {
-        this.props.navigation.navigate('Home');
-    }
+      .then((res) => {
+        return res.blob();
+      })
+      .then((resBlob) => {
+        let pic = URL.createObjectURL(resBlob);
+        this.setState({
+          profilePicture: pic
+        })
+      })
+      }
 
     render(){
         return (
@@ -140,12 +140,12 @@ class profileScreen extends Component {
                   <TouchableOpacity
                     onPress={this.updateProfile}
                     style={styles.button}>
-                    <Text style={styles.textBoxes}>Update my profile</Text>
+                    <Text style={styles.textBoxes}>Add as friend</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={this.backHome}
                     style={styles.button}>
-                    <Text style={styles.textBoxes}>Back to Home</Text>
+                    <Text style={styles.textBoxes}>View {""} {this.state.firstName} {"'s posts"}</Text>
                   </TouchableOpacity>
               </View>
               {/* <View style={{height: 200, width: 440, padding: 20}}>
@@ -167,7 +167,7 @@ class profileScreen extends Component {
             </View> */}
             </View>
           );
-        } 
+        }  
 }
 
 const styles = StyleSheet.create({ 
@@ -255,4 +255,4 @@ const styles = StyleSheet.create({
       }
   })
 
-export default profileScreen;
+export default otherProfile;

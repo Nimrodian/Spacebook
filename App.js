@@ -7,10 +7,10 @@ import 'react-native-gesture-handler';
 import loginScreen from './screens/login';
 import homeScreen from './screens/home';
 import registerScreen from './screens/register';
-import logoutScreen from './screens/logout';
 import profileScreen from './screens/profile';
 import updateProfile from './screens/updateProfile';
-
+import searchScreen from './screens/Search';
+import otherProfileScreen from './screens/otherProfile';
 
 //TO-DO list notes etc
 //1. Make it so other screens can not be accessed until the user has
@@ -22,7 +22,16 @@ class App extends Component {
   render(){
     return (
       <NavigationContainer>
-        <Stack.Navigator>
+        <Stack.Navigator
+        screenOptions={{
+          headerStyle: {
+            backgroundColor: '#4267B2',
+          },
+          headerTintColor: '#fff',
+          headerTitleStyle: {
+            fontWeight: 'bold',
+          },
+        }}>
           <Stack.Screen 
             name="Login" 
             component={loginScreen} 
@@ -37,16 +46,20 @@ class App extends Component {
             component={registerScreen} 
           />
           <Stack.Screen 
-            name='Logout' 
-            component={logoutScreen} 
-          />
-          <Stack.Screen 
             name='Profile' 
             component={profileScreen} 
           />
           <Stack.Screen
             name = "Update Profile"
             component={updateProfile}
+          />
+          <Stack.Screen 
+            name = "Search"
+            component={searchScreen}
+          />
+          <Stack.Screen
+            name = "otherProfile"
+            component = {otherProfileScreen}
           />
         </Stack.Navigator>
       </NavigationContainer>
