@@ -43,7 +43,7 @@ class registerScreen extends Component {
     })
     .then((responseJson) => {
       console.log(responseJson);
-      //this.props.navigation.navigate('Login');
+      this.props.navigation.navigate('Login');
     })
     .catch((error) =>{
       console.log(error);

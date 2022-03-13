@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { TouchableOpacity, View, Text, StyleSheet, StatusBar, ScrollView, SafeAreaView } from 'react-native';
+import { TouchableOpacity, View, Text, StyleSheet, StatusBar, ScrollView, SafeAreaView, FlatList } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 //TO-DO list for this screen.
@@ -9,15 +9,56 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 class homeScreen extends Component {
   constructor(props){
     super(props);
+    this.state={
+      postArray: []
+    }
   }
 
-  logout = async () => {
+   async componentDidMount(){
+    this.getFriends();
+  }
 
+  getAllPosts = async (response) => {
     let sessionToken = await AsyncStorage.getItem('token');
 
-    this.setState({
-      token: sessionToken 
-    })
+    if(sessionToken != null){
+      sessionToken = sessionToken.replaceAll('"', '');
+    }
+    else{
+      return null;
+    }
+
+    let allPosts = []
+
+    for (let i = 0; i < response.length; i++){
+      console.log(response[i].user_id);
+      let testValue = await fetch('http://localhost:3333/api/1.0.0/user/'+response[i].user_id+'/post', {
+        method: 'GET',
+        headers: { 'X-Authorization': sessionToken
+        }
+      })
+      .then((response) => {
+        if(response.status == 200){
+          return response.json()
+        }
+      })
+      .then((responseJson) => {
+        console.log(responseJson);
+        for(let i = 0; i < responseJson.length; i++){
+          allPosts.push(responseJson[i]);
+        }
+      })
+  }
+  allPosts = allPosts.sort((x, y) => new Date(x.timestamp) - new Date(y.timestamp));
+  this.setState({
+    postArray: allPosts
+  })
+
+  console.log(this.state.postArray);
+}
+
+  logout = async () => {
+    let sessionToken = await AsyncStorage.getItem('token');
 
     if(sessionToken != null){
       sessionToken = sessionToken.replaceAll('"', '');
@@ -41,12 +82,116 @@ class homeScreen extends Component {
     })
   }
 
+
+  //Function to get a list of the current user's friends
+  //to loop through the friend list and display their posts.
+  getFriends = async () => {
+    let id = await AsyncStorage.getItem('userID');
+    let sessionToken = await AsyncStorage.getItem('token');
+
+    if(sessionToken != null){
+      sessionToken = sessionToken.replaceAll('"', '');
+    }
+    else{
+      return null;
+    }
+
+    return fetch('http://localhost:3333/api/1.0.0/user/'+id+'/friends', {
+      method: 'GET',
+      headers: {
+        'X-Authorization': sessionToken
+      }
+    })
+    .then((response) => {
+      if(response.status == 200){
+        return response.json();
+      }
+      else if(response.status == 401){
+        throw 'something went wrong';
+      }
+    })
+    .then((responseJson) => {
+      this.getAllPosts(responseJson);
+    })
+    // .then(async (responseJson) => {
+    //   let postArray = [];
+    //   for(let i=0; i < responseJson.length; i++){
+    //     console.log(responseJson[i].user_id);
+    //     return fetch('http://localhost:3333/api/1.0.0/user/'+responseJson[i].user_id+'/post', {
+    //       method: 'GET',
+    //       headers: {
+    //         'X-Authorization': sessionToken
+    //       }
+    //     })
+    //     .then((response) => {
+    //       if(response.status == 200){
+    //         postArray.push(response)
+    //       }
+    //     })
+    //   }
+    // })
+  }
+
   myProfile = () => {
     this.props.navigation.navigate('Profile');
   }
 
   search = () => {
     this.props.navigation.navigate('Search');
+  }
+
+  post = async () =>{
+    console.log("Post");
+    this.props.navigation.navigate('Write a post');
+  }
+
+  likePost = async (user_id, post_id) => {
+    console.log("liked post");
+    console.log(user_id, post_id);
+
+    let id = await AsyncStorage.getItem('userID');
+    let sessionToken = await AsyncStorage.getItem('token');
+
+    if(sessionToken != null){
+      sessionToken = sessionToken.replaceAll('"', '');
+    }
+    else{
+      return null;
+    }
+    return fetch('http://localhost:3333/api/1.0.0/user/'+user_id+'/post/'+post_id+'/like', {
+      method: 'POST',
+      headers: {
+        'X-Authorization': sessionToken
+      }
+    })
+    .catch((error) =>{
+      console.log(error);
+    })
+
+  }
+
+  dislikePost = async (user_id, post_id) => {
+    console.log("removed like from post");
+    console.log(user_id, post_id);
+
+    let id = await AsyncStorage.getItem('userID');
+    let sessionToken = await AsyncStorage.getItem('token');
+
+    if(sessionToken != null){
+      sessionToken = sessionToken.replaceAll('"', '');
+    }
+    else{
+      return null;
+    }
+    return fetch('http://localhost:3333/api/1.0.0/user/'+user_id+'/post/'+post_id+'/like', {
+      method: 'DELETE',
+      headers: {
+        'X-Authorization': sessionToken
+      }
+    })
+    .catch((error) =>{
+      console.log(error);
+    })
   }
 
     render(){
@@ -67,33 +212,34 @@ class homeScreen extends Component {
                 onPress={this.search}>
                   <Text style={styles.sillyText}>Search</Text>
             </TouchableOpacity>
+            <TouchableOpacity style={styles.button}
+                onPress={this.post}>
+                  <Text style={styles.sillyText}>Write a post</Text>
+            </TouchableOpacity>
           </View>
           <View style={{height: 680, width: 440, padding: 20}}>
           <ScrollView style={styles.scrollView}>
-            <Text style={styles.sillyText}> 
-            Lorem ipsum dolor sit amet, consectetur 
-            adipiscing elit, sed do eiusmod tempor 
-            incididunt ut labore et dolore magna aliqua. 
-            Ut enim ad minim veniam, quis nostrud 
-            exercitation ullamco laboris nisi ut aliquip 
-            ex ea commodo consequat. Duis aute irure
-            dolor in reprehenderit in voluptate velit 
-            esse cillum dolore eu fugiat nulla pariatur. 
-            Excepteur sint occaecat cupidatat non 
-            proident, sunt in culpa qui officia deserunt 
-            mollit anim id est laborum.
-            Lorem ipsum dolor sit amet, consectetur 
-            adipiscing elit, sed do eiusmod tempor 
-            incididunt ut labore et dolore magna aliqua. 
-            Ut enim ad minim veniam, quis nostrud 
-            exercitation ullamco laboris nisi ut aliquip 
-            ex ea commodo consequat. Duis aute irure
-            dolor in reprehenderit in voluptate velit 
-            esse cillum dolore eu fugiat nulla pariatur. 
-            Excepteur sint occaecat cupidatat non 
-            proident, sunt in culpa qui officia deserunt 
-            mollit anim id est laborum.
-            </Text>
+                    <FlatList
+                        keyExtractor={(item) => item.post_id}
+                        data = {this.state.postArray}
+                        renderItem={({ item }) => (
+                          <View style={{alignItems: 'row'}}>
+                                <Text 
+                                style={styles.item}>
+                                {item.post_id} {" "} {item.author.first_name} {" "} {item.text} {" "} {item.timestamp}
+                                {"   "} {item.numLikes}
+                                </Text>
+                                <View style={{alignItems: 'row'}}>
+                                  <TouchableOpacity onPress={() => this.likePost(item.author.user_id,item.post_id)}>
+                                    <Text style={styles.sillyText}>Like</Text>
+                                  </TouchableOpacity>
+                                  <TouchableOpacity onPress={() => this.dislikePost(item.author.user_id,item.post_id)}>
+                                    <Text style={styles.sillyText}>Remove like</Text>
+                                  </TouchableOpacity> 
+                                </View>
+                          </View>
+                            )}
+                        />
           </ScrollView>
           </View>
         </View>
@@ -146,7 +292,14 @@ const styles = StyleSheet.create({
     flex: 1,
     margin: 5,
     width: 175
-  }
+  },
+  item: {
+    marginTop: 24,
+    padding: 30,
+    backgroundColor: '#1F3366',
+    fontSize: 24,
+    color: 'white'
+}
   })
 
 export default homeScreen;

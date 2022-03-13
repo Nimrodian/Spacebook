@@ -8,17 +8,18 @@ import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 //1. Implement some kind of scroll view (week 3 lab sheet), to scroll through posts 
 //2. Posting to an API
 
-class searchScreen extends Component {
+class friendRequestsScreen extends Component {
   constructor(props){
     super(props);
     this.state = {
-        searchString : "",
         searchResult: [],
-        profileID: ""
+        profileID: "",
     }
   }
 
-  
+  componentDidMount(){
+      this.search();
+  }
 
   search =  async () =>{
       console.log("worked yes boy");
@@ -32,19 +33,11 @@ class searchScreen extends Component {
         return null;
       }
 
-      this.setState({
-        userID: id, 
-        token: sessionToken
-      })
-      return fetch("http://localhost:3333/api/1.0.0/search?search_in=all&q="+this.state.searchString , {
+      return fetch("http://localhost:3333/api/1.0.0/friendrequests" , {
         method: 'GET',
         headers: {
             'X-Authorization': sessionToken
         },
-        params: {
-            'q':this.state.searchString,
-            'search_in':'friends'
-        }
     })
     .then((response) => {
         if(response.status == 200){
@@ -65,56 +58,91 @@ class searchScreen extends Component {
       })
     }
 
-    actionOnRow = async (item) => {
-        let id = await AsyncStorage.getItem('userID');
-        //console.log('Selected Item: ',item.user_id);
-        this.setState({
-            profileID: item.user_id
-        })
-        console.log('Selected user ID: ', this.state.profileID);
-        if(this.state.profileID == id){
-          this.props.navigation.navigate('Profile');
+    acceptRequest = async (id) => {
+      console.log("accepted");
+      //let id = await AsyncStorage.getItem('userID');
+      let sessionToken = await AsyncStorage.getItem('token');
+
+      if(sessionToken != null){
+        sessionToken = sessionToken.replaceAll('"', '');
+      }
+      else{
+        return null;
+      }
+
+      return fetch("http://localhost:3333/api/1.0.0/friendrequests/"+id , {
+        method: 'POST',
+        headers: {
+            'X-Authorization': sessionToken
+        },
+    })
+    .then((response) => {
+        if(response.status == 200){
+          console.log("Successfully accepted!");
+        }
+        else if(response.status == 401){
+          console.log("yes");
         }
         else{
-          this.props.navigation.navigate('otherProfile', {
-            profileID: this.state.profileID
-        });
+          throw 'Something went wrong';
+        }
+      })
+    }
+
+    rejectRequest = async (id) => {
+      console.log("rejected");
+      //let id = await AsyncStorage.getItem('userID');
+      let sessionToken = await AsyncStorage.getItem('token');
+
+      if(sessionToken != null){
+        sessionToken = sessionToken.replaceAll('"', '');
       }
+      else{
+        return null;
+      }
+
+      return fetch("http://localhost:3333/api/1.0.0/friendrequests/"+id , {
+        method: 'DELETE',
+        headers: {
+            'X-Authorization': sessionToken
+        },
+    })
+    .then((response) => {
+        if(response.status == 200){
+          console.log("Successfully rejected!");
+        }
+        else if(response.status == 401){
+          console.log("yes");
+        }
+        else{
+          throw 'Something went wrong';
+        }
+      })
     }
 
     render(){
       return (
         <View style={styles.container}>
-            <View style={{flexDirection: 'row', alignItems: '', justifyContent: 'center'}}>
-                <TextInput 
-                    style={styles.textBoxes} 
-                    placeholder={'Search'}
-                    placeholderTextColor='silver'
-                    color='white'
-                    onChangeText={(searchString) => this.setState({searchString})}
-                    value={this.state.searchString}
-                    
-                />
-                <TouchableOpacity
-                  onPress={this.search}>
-                  <Text style={styles.sillyText}>Go</Text>
-                </TouchableOpacity>
-            </View>
             <View style={{height: 680, width: 440, padding: 20}}>
                 <ScrollView style={styles.scrollView}>
                     <FlatList
                         keyExtractor={(item) => item.user_id}
                         data = {this.state.searchResult}
                         renderItem={({ item }) => (
-                        //     <Text style={styles.item}>{item.user_id} {" "} {item.user_givenname} {" "} {item.user_familyname}</Text>
-                        <TouchableWithoutFeedback onPress={ () => this.actionOnRow(item)}>
-                            <View>
+                          <View style={{alignItems: 'row'}}>
                                 <Text 
                                 style={styles.item}>
-                                {item.user_id} {" "} {item.user_givenname} {" "} {item.user_familyname}
+                                {item.user_id} {" "} {item.first_name} {" "} {item.last_name}
                                 </Text>
-                            </View>
-                        </TouchableWithoutFeedback>
+                                <View style={{alignItems: 'row'}}>
+                                  <TouchableOpacity onPress={() => this.acceptRequest(item.user_id)}>
+                                    <Text style={styles.sillyText}>Accept</Text>
+                                  </TouchableOpacity>
+                                  <TouchableOpacity onPress={() => this.rejectRequest(item.user_id)}>
+                                    <Text style={styles.sillyText}>Decline</Text>
+                                  </TouchableOpacity>
+                                </View>
+                          </View>
                             )}
                         />
                 </ScrollView>
@@ -194,4 +222,4 @@ const styles = StyleSheet.create({
   }
   })
 
-export default searchScreen;
+export default friendRequestsScreen;

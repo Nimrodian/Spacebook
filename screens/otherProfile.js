@@ -17,14 +17,19 @@ class otherProfile extends Component {
         lastName: null,
         email: null,
         friendCount: null,
-        profilePicture: null
+        profilePicture: null,
+        profileID: ""
     }
 
 
     componentDidMount (){
         this.getData();
         this.getProfilePic();
+        this.setState({
+          profileID: this.props.route.params.profileID
+        })
         console.log(this.props.route.params.profileID);
+        //console.log(profileID);
     }
 
     getData = async () => {
@@ -75,8 +80,18 @@ class otherProfile extends Component {
         })
     }
 
+    getFriendList = async () => {
+      console.log("Worked");
+      console.log(this.state.profileID);
+      this.props.navigation.navigate('friendsList', {
+        profileID: this.state.profileID  
+      });
+    }
+
     getProfilePic = async () => {
-        let id = await AsyncStorage.getItem('userID');
+        //let id = await AsyncStorage.getItem('userID');
+        let id = this.props.route.params.profileID;
+
         let sessionToken = await AsyncStorage.getItem('token');
   
         if(sessionToken != null){
@@ -107,6 +122,34 @@ class otherProfile extends Component {
       })
       }
 
+    addAsFriend = async () => {
+      let id = this.props.route.params.profileID;
+      let sessionToken = await AsyncStorage.getItem('token');
+
+      if(sessionToken != null){
+        sessionToken = sessionToken.replaceAll('"', '');
+      }
+      else{
+        return null;
+      }
+
+      return fetch("http://localhost:3333/api/1.0.0/user/"+id+"/friends",{
+          method: 'POST',
+          headers: {
+            'X-Authorization': sessionToken
+          }
+        })
+      .then((response) =>{
+        if(response.status == 201){
+          console.log("Request submitted");
+        }
+        else if(response.status == 403){
+          console.log("You have already requested to add this user as a friend.");
+        }
+      })
+    }
+
+
     render(){
         return (
             <View style={styles.container}>
@@ -132,13 +175,15 @@ class otherProfile extends Component {
                   </Text>
               </View>
               <View>
+                <TouchableOpacity onPress={this.getFriendList}>
                   <Text style={styles.sillyText}> 
                   Friends: {""} {this.state.friendCount}
                   </Text>
+                </TouchableOpacity>  
               </View>
               <View style={{flexDirection: 'row', alignItems: '', justifyContent: 'center'}}>
                   <TouchableOpacity
-                    onPress={this.updateProfile}
+                    onPress={this.addAsFriend}
                     style={styles.button}>
                     <Text style={styles.textBoxes}>Add as friend</Text>
                   </TouchableOpacity>
@@ -148,23 +193,6 @@ class otherProfile extends Component {
                     <Text style={styles.textBoxes}>View {""} {this.state.firstName} {"'s posts"}</Text>
                   </TouchableOpacity>
               </View>
-              {/* <View style={{height: 200, width: 440, padding: 20}}>
-              <ScrollView style={styles.scrollView}>
-                <Text style={styles.sillyText}> 
-                Lorem ipsum dolor sit amet, consectetur 
-                adipiscing elit, sed do eiusmod tempor 
-                incididunt ut labore et dolore magna aliqua. 
-                Ut enim ad minim veniam, quis nostrud 
-                exercitation ullamco laboris nisi ut aliquip 
-                ex ea commodo consequat. Duis aute irure
-                dolor in reprehenderit in voluptate velit 
-                esse cillum dolore eu fugiat nulla pariatur. 
-                Excepteur sint occaecat cupidatat non 
-                proident, sunt in culpa qui officia deserunt 
-                mollit anim id est laborum.
-                </Text>
-            </ScrollView>
-            </View> */}
             </View>
           );
         }  

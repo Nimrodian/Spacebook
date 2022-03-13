@@ -5,6 +5,10 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 //JOE MAKE SURE TO PROPERLY READ UP ON ASHES VERSION IF DIDMOUNT ETC. https://github.com/ash-williams/expo-week3-lecture-demos/blob/master/async-storage/components/login.js
 
+
+//JOE YOU CAN JUST SET THE STATE OF THE ID AND USE IT THROUGHOUT EACH SCREEN YOU DO NOT NEED TO AWAIT ASYNC EACH TIME YOU IDIOT
+
+
 class profileScreen extends Component {
     
     state = {
@@ -12,7 +16,9 @@ class profileScreen extends Component {
         lastName: null,
         email: null,
         friendCount: null,
-        profilePicture: null
+        profilePicture: null,
+        userID: null,
+        token: null
     }
 
     componentDidMount (){
@@ -36,10 +42,10 @@ class profileScreen extends Component {
             token: sessionToken
         })
 
-        return fetch("http://localhost:3333/api/1.0.0/user/" + id, {
+        return fetch("http://localhost:3333/api/1.0.0/user/" + this.state.userID, {
             method: 'GET',
             headers: {
-                'X-Authorization': sessionToken
+                'X-Authorization': this.state.token
             }
         })
         .then((response) => {
@@ -77,11 +83,7 @@ class profileScreen extends Component {
       else{
         return null;
       }
-
-      this.setState({
-        userID: id, 
-        token: sessionToken
-      })
+      
       return fetch("http://localhost:3333/api/1.0.0/user/" + id + "/photo", {
         method: 'GET',
         headers: {
@@ -105,6 +107,21 @@ class profileScreen extends Component {
 
     backHome = () => {
         this.props.navigation.navigate('Home');
+    }
+
+    friendsList = async () => {
+      console.log("yes lad");
+      let id = await AsyncStorage.getItem('userID');
+
+      this.props.navigation.navigate('friendsList', {
+        profileID: id
+      });
+    }
+
+    friendRequests = async () => {
+      console.log("friend requests button");
+      this.props.navigation.navigate('friendRequests');
+
     }
 
     render(){
@@ -132,9 +149,18 @@ class profileScreen extends Component {
                   </Text>
               </View>
               <View>
+                <TouchableOpacity onPress={this.friendsList}>
                   <Text style={styles.sillyText}> 
                   Friends: {""} {this.state.friendCount}
                   </Text>
+                </TouchableOpacity>
+              </View>
+              <View>
+                <TouchableOpacity onPress={this.friendRequests}>
+                  <Text style={styles.sillyText}>
+                    My friend requests
+                  </Text>
+                </TouchableOpacity>
               </View>
               <View style={{flexDirection: 'row', alignItems: '', justifyContent: 'center'}}>
                   <TouchableOpacity

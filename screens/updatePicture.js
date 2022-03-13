@@ -27,6 +27,7 @@ class updatePictureScreen extends Component {
         let sessionToken = await AsyncStorage.getItem('token');
         let res = await fetch(data.base64);
         let blob = await res.blob();
+        console.log(blob);
 
         if(sessionToken != null){
             sessionToken = sessionToken.replaceAll('"', '');
@@ -44,7 +45,7 @@ class updatePictureScreen extends Component {
         //     },
         //     body: blob
         // })
-        return await fetch('http://localhost:3333/api/1.0.0/user/', id, 'photo', 
+        return await fetch('http://localhost:3333/api/1.0.0/user/'+id+'/photo', 
         {
           method: 'POST',
           headers: {
@@ -52,8 +53,10 @@ class updatePictureScreen extends Component {
           },
           body: blob
         })
-        
         .then((response) => {
+            if(response.status == 200){
+                this.props.navigation.navigate('Profile');
+            }
             console.log("Profile picture added", response);
         })
         .catch((e) => {
@@ -118,7 +121,6 @@ class updatePictureScreen extends Component {
 
 const styles = StyleSheet.create({ 
     buttonContainer: {
-      flex: 1,
       backgroundColor: 'transparent',
       flexDirection: 'row',
       margin: 20
