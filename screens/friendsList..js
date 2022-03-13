@@ -66,7 +66,7 @@ class friendListScreen extends Component {
         if(this.state.areFriends == true){
             return (
                     <View style={styles.container}>
-                        <View style={{height: 700, width: 440, padding: 20}}>
+                        <View style={{height: 765, width: 440, padding: 20}}>
                             <ScrollView style={styles.scrollView}>
                                 <FlatList
                                     keyExtractor={(item) => item.user_id}

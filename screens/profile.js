@@ -10,8 +10,9 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 
 class profileScreen extends Component {
-    
-    state = {
+  constructor(props){
+    super(props);
+    this.state = {
         firstName: null,
         lastName: null,
         email: null,
@@ -20,6 +21,7 @@ class profileScreen extends Component {
         userID: null,
         token: null
     }
+  }
 
     componentDidMount (){
         this.getData();
@@ -124,6 +126,10 @@ class profileScreen extends Component {
 
     }
 
+    myPosts = async () => {
+      this.props.navigation.navigate('My posts');
+    }
+
     render(){
         return (
             <View style={styles.container}>
@@ -159,6 +165,13 @@ class profileScreen extends Component {
                 <TouchableOpacity onPress={this.friendRequests}>
                   <Text style={styles.sillyText}>
                     My friend requests
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              <View>
+                <TouchableOpacity onPress={this.myPosts}>
+                  <Text style={styles.sillyText}>
+                    My posts
                   </Text>
                 </TouchableOpacity>
               </View>
