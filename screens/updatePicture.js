@@ -27,7 +27,6 @@ class updatePictureScreen extends Component {
         let sessionToken = await AsyncStorage.getItem('token');
         let res = await fetch(data.base64);
         let blob = await res.blob();
-        console.log(blob);
 
         if(sessionToken != null){
             sessionToken = sessionToken.replaceAll('"', '');
@@ -35,16 +34,6 @@ class updatePictureScreen extends Component {
         else{
             return null;
         }
-        console.log(sessionToken);
-        console.log(blob);
-        // return fetch("http://localhost:3333/api/1.0.0/user/" + id + "/photo", {
-        //     method: "POST",
-        //     headers: {
-        //         "Content-Type:":"image/png",
-        //         "X-Authorization": sessionToken
-        //     },
-        //     body: blob
-        // })
         return await fetch('http://localhost:3333/api/1.0.0/user/'+id+'/photo', 
         {
           method: 'POST',
@@ -55,12 +44,13 @@ class updatePictureScreen extends Component {
         })
         .then((response) => {
             if(response.status == 200){
-                this.props.navigation.navigate('Profile');
+                alert('Profile picture uploaded successfully');
+                this.props.navigation.navigate('Home');
             }
-            console.log("Profile picture added", response);
         })
         .catch((e) => {
             console.log(e);
+            alert('Something went wrong trying to upload your new profile picture');
         })
     }
 
@@ -104,19 +94,6 @@ class updatePictureScreen extends Component {
             );
         }
     }
-    // render(){
-    //     return(
-    //         <View>
-    //             <TouchableOpacity
-    //                 style={styles.button}
-    //                 onPress={() => {
-    //                     this.takePicture();
-    //                 }}>
-    //                 <Text style={styles.sillyText}> Take a picture! </Text>
-    //             </TouchableOpacity>
-    //         </View>
-    //     );
-    // } 
 }
 
 const styles = StyleSheet.create({ 

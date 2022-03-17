@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { TextInput, View, Text, StyleSheet, StatusBar, ScrollView, SafeAreaView, TouchableOpacity } from 'react-native';
+import { TextInput, View, Text, StyleSheet, StatusBar, ScrollView, SafeAreaView, TouchableOpacity, Alert } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
 //TO-DO list for this screen.
@@ -13,50 +13,11 @@ class registerScreen extends Component {
       first_name: "",
       last_name: "",
       email_address: "",
-      password: ""
+      password: "",
     }
   }
 
-  login = async () => { 
-    //console.log(this.state.email_address)
-    //console.log(this.state.password)
-
-    return fetch('http://localhost:3333/api/1.0.0/login', 
-    {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({
-        email: this.state.email_address,
-        password: this.state.password
-    })
-    })
-    .then((response) => {
-      if(response.status == 200){
-        return response.json()
-      }
-      else if(response.status == 400){
-        throw 'Failed validation';
-      }
-      else{
-        throw 'Something went wrong';
-      }
-    })
-    .then((responseJson) => {
-      console.log(responseJson);
-      this.props.navigation.navigate('Login');
-    })
-    .catch((error) =>{
-      console.log(error);
-    })
-
-    }
-
   register = async ()  => {
-    console.log(this.state.email_address)
-    console.log(this.state.password)
-    console.log(this.state.first_name)
-    console.log(this.state.last_name)
-
     return fetch('http://localhost:3333/api/1.0.0/user/',
     {
       method: 'POST',
@@ -88,11 +49,22 @@ class registerScreen extends Component {
     })
     .catch((error) =>{
       console.log(error)
+      alert('Account already exists');
     })
   }
 
   goBack = () => {
     this.props.navigation.navigate('Login');
+  }
+
+  registerCheck = () =>{
+    if(this.state.first_name == "" || this.state.last_name == ""){
+      alert('Please enter data into all fields.');
+      this.props.navigation.navigate('Register');
+    }
+    else{
+      this.register();
+    }
   }
 
   render(){
@@ -147,7 +119,7 @@ class registerScreen extends Component {
               </View>
               <View>
                 <TouchableOpacity
-                  onPress={this.register}>
+                  onPress={this.registerCheck}>
                   <Text style={styles.sillyText}>Register</Text>
                 </TouchableOpacity>
               </View>

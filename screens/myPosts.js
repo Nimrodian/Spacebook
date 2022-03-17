@@ -40,10 +40,13 @@ class myPosts extends Component {
         }
       })
       .then((responseJson) => {
-        console.log(responseJson);
         this.setState({
             postArray: responseJson
         })
+      })
+      .catch((error) => {
+        console.log(error);
+        alert('Something went wrong when trying to gather your posts');
       })
     }   
 
@@ -58,8 +61,6 @@ class myPosts extends Component {
       return null;
     }
     
-    console.log(id, sessionToken, postID);
-
     return fetch('http://localhost:3333/api/1.0.0/user/'+id+'/post/'+postID+'/', {
         method: 'DELETE',
         headers: { 
@@ -68,7 +69,10 @@ class myPosts extends Component {
       })
       .then((response) => {
         if(response.status == 200){
-            console.log("post successfully deleted!");        }
+            console.log("post successfully deleted!"); 
+            alert('Post succesfully deleted');
+            this.props.navigation.navigate('Profile');       
+          }
       })
       .catch((error) =>{
         console.log(error);
@@ -89,8 +93,9 @@ class myPosts extends Component {
     render(){
       return (
         <View style={styles.container}>
-          <View style={{height: 765, width: 440, padding: 20}}>
+          <View style={{height: 700, width: 440, padding: 20}}>
           <ScrollView style={styles.scrollView}>
+                  <View>
                     <FlatList
                         keyExtractor={(item) => item.post_id}
                         data = {this.state.postArray}
@@ -98,27 +103,30 @@ class myPosts extends Component {
                           <View style={{alignItems: 'row'}}>
                                 <Text 
                                 style={styles.item}>
-                                {item.post_id} {" "} {item.author.first_name} {" "} {item.text} {" "} {item.timestamp}
-                                {"   "} {item.numLikes}
+                                {"Post: "}{item.text}{"\n"}{"Date: "}{item.timestamp}{"\n"}
+                                {"Like count: "}{item.numLikes}
                                 </Text>
+                                <View style={{alignItems: 'center'}}>
                                 <TouchableOpacity onPress={() => this.editPost(item.post_id)}>
-                                    <Text> 
+                                    <Text style={{fontFamily: 'helvetica',fontSize: 20,color: 'white',lineHeight: 45}}> 
                                         Edit post
                                     </Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity onPress={() => this.deletePost(item.post_id)}>
-                                    <Text>
+                                    <Text style={{fontFamily: 'helvetica',fontSize: 20,color: 'red',lineHeight: 45}}>
                                         Delete post
                                     </Text>
                                 </TouchableOpacity>
+                                </View>
                           </View>
                             )}
                         />
+                    </View>
           </ScrollView>
           </View>
           <View>
-            <TouchableOpacity onPress={this.drafts}>
-              <Text>My drafts</Text>
+            <TouchableOpacity style={styles.button} onPress={this.drafts}>
+              <Text style={{fontFamily: 'helvetica',fontSize: 20,color: 'white',lineHeight: 45}}>My drafts</Text>
             </TouchableOpacity>
           </View>
         </View>

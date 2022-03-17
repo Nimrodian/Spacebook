@@ -9,8 +9,6 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import 'react-native-gesture-handler';
 
-//JOE MAKE SURE TO PROPERLY READ UP ON ASHES VERSION IF DIDMOUNT ETC. https://github.com/ash-williams/expo-week3-lecture-demos/blob/master/async-storage/components/login.js
-
 class otherProfile extends Component {
     state = {
         firstName: null,
@@ -28,12 +26,9 @@ class otherProfile extends Component {
         this.setState({
           profileID: this.props.route.params.profileID
         })
-        console.log(this.props.route.params.profileID);
-        //console.log(profileID);
     }
 
     getData = async () => {
-        //let id = await AsyncStorage.getItem('userID');
         let id = this.props.route.params.profileID;
         let sessionToken = await AsyncStorage.getItem('token');
 
@@ -74,24 +69,22 @@ class otherProfile extends Component {
                     email: responseJson.email,
                     friendCount: responseJson.friend_count
                 })
-                console.log(responseJson);
-                console.log(this.state.firstName);
             }
+        })
+        .catch((error) =>{
+          console.log(error);
+          alert('Something went wrong trying to retrieve this users information');
         })
     }
 
     getFriendList = async () => {
-      console.log("Worked");
-      console.log(this.state.profileID);
       this.props.navigation.navigate('friendsList', {
         profileID: this.state.profileID  
       });
     }
 
     getProfilePic = async () => {
-        //let id = await AsyncStorage.getItem('userID');
         let id = this.props.route.params.profileID;
-
         let sessionToken = await AsyncStorage.getItem('token');
   
         if(sessionToken != null){
@@ -120,6 +113,10 @@ class otherProfile extends Component {
           profilePicture: pic
         })
       })
+      .catch((error) =>{
+        console.log(error);
+        alert('Something went wrong trying to retrieve this users profile picture');
+      })
       }
 
     addAsFriend = async () => {
@@ -145,7 +142,12 @@ class otherProfile extends Component {
         }
         else if(response.status == 403){
           console.log("You have already requested to add this user as a friend.");
+          alert('You have already requested to add this user as a friend or you are already friends');
         }
+      })
+      .catch((error) => {
+        console.log(error);
+        alert('Something went wrong trying to add this user as a friend');
       })
     }
 

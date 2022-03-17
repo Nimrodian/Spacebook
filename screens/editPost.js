@@ -18,8 +18,6 @@ class editPostScreen extends Component {
   }
 
   getPost =  async () =>{
-      console.log("worked yes boy,"+this.props.route.params.post);
-      console.log(this.state.postString);
       let id = await AsyncStorage.getItem('userID');
       let sessionToken = await AsyncStorage.getItem('token');
 
@@ -43,15 +41,17 @@ class editPostScreen extends Component {
         }
       })
     .then((responseJson) => {
-        console.log(responseJson);
         this.setState({
             postString: responseJson.text
         })
     })
+    .catch((error) => {
+      console.log(error);
+      alert('Something went wrong while trying to retrieve your post to edit');
+    })
     }
 
     editPost = async () => {
-        console.log("this working baby");
         let id = await AsyncStorage.getItem('userID');
         let sessionToken = await AsyncStorage.getItem('token');
   
@@ -62,7 +62,6 @@ class editPostScreen extends Component {
           return null;
         }
 
-        console.log(this.state.postString);
         return fetch('http://localhost:3333/api/1.0.0/user/'+id+'/post/'+this.props.route.params.post, {
             method: 'PATCH',
             headers: {
@@ -78,9 +77,10 @@ class editPostScreen extends Component {
                 this.props.navigation.navigate('Profile');
             }
         })
-        // .then((responseJson) => {
-        //     //console.log(responseJson);
-        // })
+        .catch((error) =>{
+          console.log(error);
+          alert('Something went wrong while trying to edit your post');
+        })
     }
 
     render() {

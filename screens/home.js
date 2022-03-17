@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { TouchableOpacity, View, Text, StyleSheet, StatusBar, ScrollView, SafeAreaView, FlatList } from 'react-native';
+import { TouchableOpacity, View, Text, StyleSheet, StatusBar, ScrollView, SafeAreaView, FlatList, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 //TO-DO list for this screen.
@@ -31,8 +31,7 @@ class homeScreen extends Component {
     let allPosts = []
 
     for (let i = 0; i < response.length; i++){
-      console.log(response[i].user_id);
-      let testValue = await fetch('http://localhost:3333/api/1.0.0/user/'+response[i].user_id+'/post', {
+      await fetch('http://localhost:3333/api/1.0.0/user/'+response[i].user_id+'/post', {
         method: 'GET',
         headers: { 'X-Authorization': sessionToken
         }
@@ -43,18 +42,19 @@ class homeScreen extends Component {
         }
       })
       .then((responseJson) => {
-        console.log(responseJson);
         for(let i = 0; i < responseJson.length; i++){
           allPosts.push(responseJson[i]);
         }
       })
+      .catch((error) =>{
+        console.log(error);
+        alert('Something went wrong while trying to get your friends posts');
+      })
   }
-  allPosts = allPosts.sort((x, y) => new Date(x.timestamp) - new Date(y.timestamp));
+  allPosts = allPosts.sort((y, x) => new Date(x.timestamp) - new Date(y.timestamp));
   this.setState({
     postArray: allPosts
   })
-
-  console.log(this.state.postArray);
 }
 
   logout = async () => {
@@ -80,11 +80,12 @@ class homeScreen extends Component {
         this.props.navigation.navigate('Login');
       }
     })
+    .catch((error) =>{
+      console.log(error);
+      alert('Something went wrong whilst trying to log you out!');
+    })
   }
 
-
-  //Function to get a list of the current user's friends
-  //to loop through the friend list and display their posts.
   getFriends = async () => {
     let id = await AsyncStorage.getItem('userID');
     let sessionToken = await AsyncStorage.getItem('token');
@@ -113,23 +114,10 @@ class homeScreen extends Component {
     .then((responseJson) => {
       this.getAllPosts(responseJson);
     })
-    // .then(async (responseJson) => {
-    //   let postArray = [];
-    //   for(let i=0; i < responseJson.length; i++){
-    //     console.log(responseJson[i].user_id);
-    //     return fetch('http://localhost:3333/api/1.0.0/user/'+responseJson[i].user_id+'/post', {
-    //       method: 'GET',
-    //       headers: {
-    //         'X-Authorization': sessionToken
-    //       }
-    //     })
-    //     .then((response) => {
-    //       if(response.status == 200){
-    //         postArray.push(response)
-    //       }
-    //     })
-    //   }
-    // })
+    .catch((error) =>{
+      console.log(error);
+      alert('Something went wrong while trying to get your friend list');
+    })
   }
 
   myProfile = () => {
@@ -146,9 +134,6 @@ class homeScreen extends Component {
   }
 
   likePost = async (user_id, post_id) => {
-    console.log("liked post");
-    console.log(user_id, post_id);
-
     let id = await AsyncStorage.getItem('userID');
     let sessionToken = await AsyncStorage.getItem('token');
 
@@ -164,16 +149,22 @@ class homeScreen extends Component {
         'X-Authorization': sessionToken
       }
     })
+    .then((response)=>{
+      if(response.status == 200){
+        alert('Post Liked');
+      }
+      else{
+        console.log('You have already liked this post');
+        alert('You have already liked this post');
+      }
+    })
     .catch((error) =>{
       console.log(error);
+      alert('You have already liked this post');
     })
-
   }
 
   dislikePost = async (user_id, post_id) => {
-    console.log("removed like from post");
-    console.log(user_id, post_id);
-
     let id = await AsyncStorage.getItem('userID');
     let sessionToken = await AsyncStorage.getItem('token');
 
@@ -189,8 +180,14 @@ class homeScreen extends Component {
         'X-Authorization': sessionToken
       }
     })
+    .then((response) =>{
+      if(response.status == 200){
+        alert('Removed Like');
+      }
+    })
     .catch((error) =>{
       console.log(error);
+      alert('You have not previously liked this post');
     })
   }
 
@@ -226,15 +223,15 @@ class homeScreen extends Component {
                           <View style={{alignItems: 'row'}}>
                                 <Text 
                                 style={styles.item}>
-                                {item.post_id} {" "} {item.author.first_name} {" "} {item.text} {" "} {item.timestamp}
-                                {"   "} {item.numLikes}
+                                {item.author.first_name}{": "}{item.text}{"\n"}{"Date: "}{item.timestamp}{"\n"}
+                                {"Like count: "}{item.numLikes}
                                 </Text>
-                                <View style={{alignItems: 'row'}}>
+                                <View style={{alignItems: 'center'}}>
                                   <TouchableOpacity onPress={() => this.likePost(item.author.user_id,item.post_id)}>
-                                    <Text style={styles.sillyText}>Like</Text>
+                                    <Text style={{fontFamily: 'helvetica',fontSize: 20,color: 'green',lineHeight: 45}}>Like</Text>
                                   </TouchableOpacity>
                                   <TouchableOpacity onPress={() => this.dislikePost(item.author.user_id,item.post_id)}>
-                                    <Text style={styles.sillyText}>Remove like</Text>
+                                    <Text style={{fontFamily: 'helvetica',fontSize: 20,color: 'red',lineHeight: 45}}>Remove like</Text>
                                   </TouchableOpacity> 
                                 </View>
                           </View>
@@ -277,10 +274,6 @@ const styles = StyleSheet.create({
       fontSize: 20,
       color: 'white',
       lineHeight: 45,
-      //borderColor: 'white',
-      //borderWidth:2,
-      //borderRadius:'12px',
-      //backgroundColor: "#1F3366"
     },
     button: {
     alignItems: "center",

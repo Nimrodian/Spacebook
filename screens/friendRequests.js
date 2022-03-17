@@ -22,7 +22,6 @@ class friendRequestsScreen extends Component {
   }
 
   search =  async () =>{
-      console.log("worked yes boy");
       let id = await AsyncStorage.getItem('userID');
       let sessionToken = await AsyncStorage.getItem('token');
 
@@ -51,16 +50,17 @@ class friendRequestsScreen extends Component {
         }
       })
       .then((responseJson) => {
-        console.log("this worked ", responseJson);
         this.setState({
             searchResult: responseJson
         })
       })
+      .catch((error) =>{
+        console.log(error);
+        alert('You have no friend requests');
+      })
     }
 
     acceptRequest = async (id) => {
-      console.log("accepted");
-      //let id = await AsyncStorage.getItem('userID');
       let sessionToken = await AsyncStorage.getItem('token');
 
       if(sessionToken != null){
@@ -79,19 +79,23 @@ class friendRequestsScreen extends Component {
     .then((response) => {
         if(response.status == 200){
           console.log("Successfully accepted!");
+          alert('Request accepted');
+          this.props.navigation.navigate('Profile');
         }
         else if(response.status == 401){
-          console.log("yes");
+          console.log("something went wrong when trying to accept this friend request");
         }
         else{
           throw 'Something went wrong';
         }
       })
+      .catch((error) =>{
+        console.log(error);
+        alert('Something went wrong when trying to accept this friend request');
+      })
     }
 
     rejectRequest = async (id) => {
-      console.log("rejected");
-      //let id = await AsyncStorage.getItem('userID');
       let sessionToken = await AsyncStorage.getItem('token');
 
       if(sessionToken != null){
@@ -110,6 +114,8 @@ class friendRequestsScreen extends Component {
     .then((response) => {
         if(response.status == 200){
           console.log("Successfully rejected!");
+          alert('Request declined');
+          this.props.navigation.navigate('Profile');
         }
         else if(response.status == 401){
           console.log("yes");
@@ -117,6 +123,10 @@ class friendRequestsScreen extends Component {
         else{
           throw 'Something went wrong';
         }
+      })
+      .catch((error) => {
+        console.log(error);
+        alert('Something went wrong when trying to decline this friend request');
       })
     }
 

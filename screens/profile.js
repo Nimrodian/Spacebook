@@ -3,12 +3,6 @@ import { TouchableOpacity, View, Image, Text, StyleSheet, StatusBar, ScrollView,
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
 
-//JOE MAKE SURE TO PROPERLY READ UP ON ASHES VERSION IF DIDMOUNT ETC. https://github.com/ash-williams/expo-week3-lecture-demos/blob/master/async-storage/components/login.js
-
-
-//JOE YOU CAN JUST SET THE STATE OF THE ID AND USE IT THROUGHOUT EACH SCREEN YOU DO NOT NEED TO AWAIT ASYNC EACH TIME YOU IDIOT
-
-
 class profileScreen extends Component {
   constructor(props){
     super(props);
@@ -123,7 +117,6 @@ class profileScreen extends Component {
     friendRequests = async () => {
       console.log("friend requests button");
       this.props.navigation.navigate('friendRequests');
-
     }
 
     myPosts = async () => {

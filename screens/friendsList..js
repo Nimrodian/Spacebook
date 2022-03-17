@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { TouchableOpacity, View, Text, StyleSheet, TextInput, StatusBar, ScrollView, SafeAreaView, FlatList, TouchableNativeFeedbackBase } from 'react-native';
+import { TouchableOpacity, View, Text, StyleSheet, TextInput, StatusBar, ScrollView, SafeAreaView, FlatList, TouchableNativeFeedbackBase, TouchableWithoutFeedback } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 class friendListScreen extends Component {
@@ -14,15 +14,11 @@ class friendListScreen extends Component {
 
   componentDidMount (){
     this.friendSearch();
-    console.log(this.props.route.params.profileID);
   }
 
   friendSearch =  async () =>{
       let id = this.props.route.params.profileID;
-      //let id = await AsyncStorage.getItem('userID');
       let sessionToken = await AsyncStorage.getItem('token');
-      console.log(id);
-      console.log(sessionToken);
       if(sessionToken != null){
         sessionToken = sessionToken.replaceAll('"', '');
       }
@@ -55,12 +51,30 @@ class friendListScreen extends Component {
         }
       })
       .then((responseJson) => {
-        console.log("this worked ", responseJson);
         this.setState({
             searchResult: responseJson
         })
       })
+      .catch((error) => {
+        console.log(error);
+      })
     }
+
+    actionOnRow = async (item) => {
+      let id = await AsyncStorage.getItem('userID');
+      this.setState({
+          profileID: item.user_id
+      })
+      console.log('Selected user ID: ', this.state.profileID);
+      if(this.state.profileID == id){
+        this.props.navigation.navigate('Profile');
+      }
+      else{
+        this.props.navigation.navigate('otherProfile', {
+          profileID: this.state.profileID
+      });
+    }
+  }
 
     render(){
         if(this.state.areFriends == true){
@@ -68,18 +82,21 @@ class friendListScreen extends Component {
                     <View style={styles.container}>
                         <View style={{height: 765, width: 440, padding: 20}}>
                             <ScrollView style={styles.scrollView}>
-                                <FlatList
-                                    keyExtractor={(item) => item.user_id}
-                                    data = {this.state.searchResult}
-                                    renderItem={({ item }) => (
-                                        <View>
-                                            <Text 
-                                            style={styles.item}>
-                                            {item.user_id} {" "} {item.user_givenname} {" "} {item.user_familyname}
-                                            </Text>
-                                        </View>
-                                        )}
-                                    />
+                              <FlatList
+                                keyExtractor={(item) => item.user_id}
+                                data = {this.state.searchResult}
+                                renderItem={({ item }) => (
+                                //     <Text style={styles.item}>{item.user_id} {" "} {item.user_givenname} {" "} {item.user_familyname}</Text>
+                                <TouchableWithoutFeedback onPress={ () => this.actionOnRow(item)}>
+                                    <View>
+                                        <Text 
+                                        style={styles.item}>
+                                        {item.user_id} {" "} {item.user_givenname} {" "} {item.user_familyname}
+                                        </Text>
+                                    </View>
+                                </TouchableWithoutFeedback>
+                                    )}
+                                />
                             </ScrollView>
                         </View>
                     </View>
@@ -128,10 +145,6 @@ const styles = StyleSheet.create({
       color: 'white',
       lineHeight: 45,
       textAlign: 'center'
-      //borderColor: 'white',
-      //borderWidth:2,
-      //borderRadius:'12px',
-      //backgroundColor: "#1F3366"
     },
     button: {
     alignItems: "center",

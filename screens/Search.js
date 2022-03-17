@@ -18,10 +18,7 @@ class searchScreen extends Component {
     }
   }
 
-  
-
   search =  async () =>{
-      console.log("worked yes boy");
       let id = await AsyncStorage.getItem('userID');
       let sessionToken = await AsyncStorage.getItem('token');
 
@@ -36,6 +33,7 @@ class searchScreen extends Component {
         userID: id, 
         token: sessionToken
       })
+
       return fetch("http://localhost:3333/api/1.0.0/search?search_in=all&q="+this.state.searchString , {
         method: 'GET',
         headers: {
@@ -58,16 +56,18 @@ class searchScreen extends Component {
         }
       })
       .then((responseJson) => {
-        console.log("this worked ", responseJson);
         this.setState({
             searchResult: responseJson
         })
+      })
+      .catch((error) => {
+        console.log(error);
+        alert('Something went wrong while trying to retrive your search, please try again');
       })
     }
 
     actionOnRow = async (item) => {
         let id = await AsyncStorage.getItem('userID');
-        //console.log('Selected Item: ',item.user_id);
         this.setState({
             profileID: item.user_id
         })
@@ -106,7 +106,6 @@ class searchScreen extends Component {
                         keyExtractor={(item) => item.user_id}
                         data = {this.state.searchResult}
                         renderItem={({ item }) => (
-                        //     <Text style={styles.item}>{item.user_id} {" "} {item.user_givenname} {" "} {item.user_familyname}</Text>
                         <TouchableWithoutFeedback onPress={ () => this.actionOnRow(item)}>
                             <View>
                                 <Text 

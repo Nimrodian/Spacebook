@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, TextInput, Button, Image, Pressable, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TextInput, Button, Image, Pressable, TouchableOpacity, Alert } from 'react-native';
 import { createNativeStackNavigator, createAppContainer } from '@react-navigation/native-stack';
 import { LinearGradient } from 'expo-linear-gradient';
 import { createStackNavigator } from 'react-navigation-stack';
@@ -55,14 +55,12 @@ export default class loginScreen extends Component {
       await AsyncStorage.setItem("token", JSON.stringify(responseJson.token));
     })
     .then((responseJson) => {
-      console.log(responseJson);
-      this.search();
-      //this.props.navigation.logoutScreen.
-      
+      this.search();      
       this.props.navigation.navigate('Home');
     })
     .catch((error) =>{
       console.log(error);
+      alert('Please enter valid login credentials');
     })
   }
 
@@ -71,19 +69,12 @@ export default class loginScreen extends Component {
     let id = await AsyncStorage.getItem('userID');
     let sessionToken = await AsyncStorage.getItem('token');
 
-    // if(drafts == null){
-    //   drafts = [];
-    //   await AsyncStorage.setItem('drafts' + id, JSON.stringify(drafts));
-    // }
-
     if(sessionToken != null){
       sessionToken = sessionToken.replaceAll('"', '');
     }
     else{
       return null;
     }
-
-    console.log(sessionToken);
 
     return fetch("http://localhost:3333/api/1.0.0/user/" + id, {
       method: 'GET',
@@ -103,11 +94,7 @@ export default class loginScreen extends Component {
         throw 'Something went wrong';
       }
     })
-    .then((responseJson) => {
-      console.log("this worked ", responseJson);
-    })
   }
-
 
    register = () => {
     this.props.navigation.navigate('Register');
@@ -117,7 +104,6 @@ export default class loginScreen extends Component {
     return (
       <View style={styles.container}>
         <LinearGradient
-        // Background Linear Gradient
         colors={['rgba(0,0,0,0.8)', 'transparent']}
         style={styles.background}
         />  

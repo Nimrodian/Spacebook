@@ -46,28 +46,18 @@ class updateProfile extends Component {
         }),
       },
     )
-
       .then((response) => {
         if (response.status === 200) {
-        // return response.json()
-          return response;
+          this.props.navigation.navigate('Profile');
+        }
+        else{
+          alert('Something went wrong when trying to update your profile');
         }
       })
-      .catch((err) => {
-        console.log(err);
+      .catch((error) => {
+        console.log(error);
+        alert('Something went wrong when trying to update your profile');
       })
-      .then(() => {
-      // console.log(responseJson);
-      // this.props.navigation.reset({ //Resets the screen stacks so the users profile
-      // is updated instantly rather than having to logout and then back in.
-      //   index: 0,
-      //   routes: [{name: 'Profile'}]
-      // })
-        this.props.navigation.navigate('Profile');
-      });
-    // .catch((error) =>{
-    //   console.log(error)
-    // })
   };
 
   goBack = () => {
@@ -82,7 +72,6 @@ class updateProfile extends Component {
     return (
       <View style={styles.container}>
         <LinearGradient
-          // Background Linear Gradient
           colors={['rgba(0,0,0,0.8)', 'transparent']}
           style={styles.background}
         />
