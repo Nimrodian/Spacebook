@@ -82,6 +82,10 @@ class myPosts extends Component {
         });
     }
 
+    drafts = () =>{
+      this.props.navigation.navigate('My drafts');
+    }
+
     render(){
       return (
         <View style={styles.container}>
@@ -111,6 +115,11 @@ class myPosts extends Component {
                             )}
                         />
           </ScrollView>
+          </View>
+          <View>
+            <TouchableOpacity onPress={this.drafts}>
+              <Text>My drafts</Text>
+            </TouchableOpacity>
           </View>
         </View>
       );

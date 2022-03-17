@@ -22,7 +22,7 @@ class postScreen extends Component {
       if(sessionToken != null){
         sessionToken = sessionToken.replaceAll('"', '');
       }
-      else{
+      else {
         return null;
       }
 
@@ -50,6 +50,37 @@ class postScreen extends Component {
 
     }
 
+    saveDraft = async () => {
+      let id = await AsyncStorage.getItem('userID');
+
+      // if(draftPosts == null){
+      //   draftPosts = [];
+      // }
+  
+      // draftPosts.push(this.state.postString);
+
+      // await AsyncStorage.setItem('posts'+id, JSON.stringify(draftPosts));
+
+
+      await AsyncStorage.setItem(id, this.state.postString);
+
+    
+      // if(savedPosts == null){
+      //   savedPosts = [];
+      // }
+
+      // savedPosts.push(this.state.postString);
+
+      // await AsyncStorage.setItem(id, JSON.stringify(savedPosts));
+
+      // let drafts = await AsyncStorage.getItem(id);
+      // console.log(drafts);
+      // drafts = drafts + '"' + this.state.postString;
+      // await AsyncStorage.setItem(id, drafts);
+      // console.log(drafts);
+      //await AsyncStorage.setItem(id, this.state.postString);
+    }
+
     render(){
       return (
         <View style={styles.container}>
@@ -64,11 +95,16 @@ class postScreen extends Component {
                     value={this.state.postString}
                 />
             </View>
-            <View>
+            <View style={{flexDirection: 'row', alignItems: '', justifyContent: 'center'}}>
                 <TouchableOpacity
                   style={styles.button}
                   onPress={this.post}>
                   <Text style={styles.sillyText}>Post</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={this.saveDraft}>
+                  <Text style={styles.sillyText}>Save as draft</Text>
                 </TouchableOpacity>
             </View>
         </View>

@@ -7,6 +7,7 @@ import registerScreen from './register';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import logoutScreen from './logout';
 import { DrawerActions } from 'react-navigation-drawer';
+import { asin } from 'react-native-reanimated';
 
 
 export default class loginScreen extends Component {
@@ -69,6 +70,11 @@ export default class loginScreen extends Component {
   search = async () => {
     let id = await AsyncStorage.getItem('userID');
     let sessionToken = await AsyncStorage.getItem('token');
+
+    // if(drafts == null){
+    //   drafts = [];
+    //   await AsyncStorage.setItem('drafts' + id, JSON.stringify(drafts));
+    // }
 
     if(sessionToken != null){
       sessionToken = sessionToken.replaceAll('"', '');

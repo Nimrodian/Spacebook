@@ -17,6 +17,7 @@ import friendRequestsScreen from './screens/friendRequests';
 import postScreen from './screens/Post';
 import myPosts from './screens/myPosts';
 import editPostScreen from './screens/editPost';
+import myDrafts from './screens/draftPosts';
 
 //TO-DO list notes etc
 //1. Make it so other screens can not be accessed until the user has
@@ -80,16 +81,20 @@ class App extends Component {
             component = {friendRequestsScreen}
           />
           <Stack.Screen
-          name = "Write a post"
-          component = {postScreen}
+            name = "Write a post"
+            component = {postScreen}
           />
           <Stack.Screen
-          name = "My posts"
-          component = {myPosts}
+            name = "My posts"
+            component = {myPosts}
           />
           <Stack.Screen
-          name = "Edit your post"
-          component = {editPostScreen}
+            name = "Edit your post"
+            component = {editPostScreen}
+          />
+          <Stack.Screen
+            name = "My drafts"
+            component = {myDrafts}
           />
         </Stack.Navigator>
       </NavigationContainer>

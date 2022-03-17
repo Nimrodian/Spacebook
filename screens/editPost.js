@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
-import { TouchableOpacity, View, Text, StyleSheet, TextInput, StatusBar, ScrollView, SafeAreaView, FlatList } from 'react-native';
+import { TouchableOpacity, View, Text, StyleSheet, TextInput, StatusBar } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ThemeColors } from 'react-navigation';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 class editPostScreen extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
     this.state = {
-        postString: "",
-        profileID: "",
+      postString: '',
+      profileID: '',
     }
   }
 
@@ -23,7 +23,7 @@ class editPostScreen extends Component {
       let id = await AsyncStorage.getItem('userID');
       let sessionToken = await AsyncStorage.getItem('token');
 
-      if(sessionToken != null){
+      if(sessionToken != null) {
         sessionToken = sessionToken.replaceAll('"', '');
       }
       else{
@@ -38,7 +38,7 @@ class editPostScreen extends Component {
         },
     })
     .then((response) => {
-        if(response.status == 200){
+        if(response.status == 200) {
             return response.json();
         }
       })
@@ -55,7 +55,7 @@ class editPostScreen extends Component {
         let id = await AsyncStorage.getItem('userID');
         let sessionToken = await AsyncStorage.getItem('token');
   
-        if(sessionToken != null){
+        if(sessionToken != null) {
           sessionToken = sessionToken.replaceAll('"', '');
         }
         else{
@@ -74,7 +74,7 @@ class editPostScreen extends Component {
             })
         })
         .then((response) =>{
-            if(response.status == 200){
+            if(response.status == 200) {
                 this.props.navigation.navigate('Profile');
             }
         })
@@ -83,7 +83,7 @@ class editPostScreen extends Component {
         // })
     }
 
-    render(){
+    render() {
       return (
         <View style={styles.container}>
             <View style={{flexDirection: 'row', alignItems: ''}}>
