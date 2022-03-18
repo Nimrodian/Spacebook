@@ -1,3 +1,4 @@
+/* eslint-disable react/destructuring-assignment */
 import React, { Component } from 'react';
 import {
   TextInput, View, Text, StyleSheet, StatusBar, TouchableOpacity,
@@ -13,9 +14,9 @@ class updateProfile extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      first_name: '',
-      last_name: '',
-      email_address: '',
+      firstName: '',
+      lastName: '',
+      emailAddress: '',
       password: '',
     };
   }
@@ -39,9 +40,9 @@ class updateProfile extends Component {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          first_name: this.state.first_name,
-          last_name: this.state.last_name,
-          email: this.state.email_address,
+          first_name: this.state.firstName,
+          last_name: this.state.lastName,
+          email: this.state.emailAddress,
           password: this.state.password,
         }),
       },
@@ -49,19 +50,14 @@ class updateProfile extends Component {
       .then((response) => {
         if (response.status === 200) {
           this.props.navigation.navigate('Profile');
-        }
-        else{
+        } else if (response.status === 400) {
           alert('Something went wrong when trying to update your profile');
         }
       })
       .catch((error) => {
         console.log(error);
         alert('Something went wrong when trying to update your profile');
-      })
-  };
-
-  goBack = () => {
-    this.props.navigation.navigate('Login');
+      });
   };
 
   updatePicture = () => {
@@ -86,16 +82,16 @@ class updateProfile extends Component {
             placeholder="First name"
             placeholderTextColor="silver"
             color="white"
-            onChangeText={(first_name) => this.setState({ first_name })}
-            value={this.state.first_name}
+            onChangeText={(firstName) => this.setState({ firstName })}
+            value={this.state.firstName}
           />
           <TextInput
             style={styles.textBoxes}
             placeholder="Surname(s)"
             placeholderTextColor="silver"
             color="white"
-            onChangeText={(last_name) => this.setState({ last_name })}
-            value={this.state.last_name}
+            onChangeText={(lastName) => this.setState({ lastName })}
+            value={this.state.lastName}
           />
         </View>
         <View style={{ flexDirection: 'row', alignItems: '', justifyContent: 'center' }}>
@@ -104,8 +100,8 @@ class updateProfile extends Component {
             placeholder="email address"
             placeholderTextColor="silver"
             color="white"
-            onChangeText={(email_address) => this.setState({ email_address })}
-            value={this.state.email_address}
+            onChangeText={(emailAddress) => this.setState({ emailAddress })}
+            value={this.state.emailAddress}
           />
           <TextInput
             style={styles.textBoxes}

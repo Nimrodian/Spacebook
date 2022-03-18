@@ -1,3 +1,4 @@
+/* eslint-disable no-else-return */
 /* eslint-disable max-len */
 import React, { Component } from 'react';
 import {
@@ -5,19 +6,23 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-class friendRequestsScreen extends Component {
+// TO-DO list for this screen.
+// 1. Implement some kind of scroll view (week 3 lab sheet), to scroll through posts
+// 2. Posting to an API
+
+class friendPosts extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      searchResult: [],
+      postArray: [],
     };
   }
 
-  componentDidMount() {
-    this.search();
+  async componentDidMount() {
+    this.getAllPosts();
   }
 
-  search = async () => {
+  getAllPosts = async () => {
     let sessionToken = await AsyncStorage.getItem('token');
 
     if (sessionToken != null) {
@@ -26,34 +31,30 @@ class friendRequestsScreen extends Component {
       return null;
     }
 
-    return fetch('http://localhost:3333/api/1.0.0/friendrequests', {
+    return fetch(`http://localhost:3333/api/1.0.0/user/${this.props.route.params.profileID}/post`, {
       method: 'GET',
-      headers: {
-        'X-Authorization': sessionToken,
-      },
+      headers: { 'X-Authorization': sessionToken },
     })
       .then((response) => {
         if (response.status === 200) {
           return response.json();
-        }
-        if (response.status === 401) {
-          console.log('yes');
         } else {
-          throw 'Something went wrong';
+          alert('You can not view the posts of a user you are not friends with');
+          this.props.navigation.navigate('Search');
         }
       })
       .then((responseJson) => {
         this.setState({
-          searchResult: responseJson,
+          postArray: responseJson,
         });
       })
       .catch((error) => {
         console.log(error);
-        alert('You have no friend requests');
+        alert('Something went wrong when trying to gather your friends posts');
       });
   };
 
-  acceptRequest = async (id) => {
+  likePost = async (userID, postID) => {
     let sessionToken = await AsyncStorage.getItem('token');
 
     if (sessionToken != null) {
@@ -61,8 +62,7 @@ class friendRequestsScreen extends Component {
     } else {
       return null;
     }
-
-    return fetch(`http://localhost:3333/api/1.0.0/friendrequests/${id}`, {
+    return fetch(`http://localhost:3333/api/1.0.0/user/${userID}/post/${postID}/like`, {
       method: 'POST',
       headers: {
         'X-Authorization': sessionToken,
@@ -70,22 +70,19 @@ class friendRequestsScreen extends Component {
     })
       .then((response) => {
         if (response.status === 200) {
-          console.log('Successfully accepted!');
-          alert('Request accepted');
-          this.props.navigation.navigate('Profile');
-        } else if (response.status === 401) {
-          console.log('something went wrong when trying to accept this friend request');
+          alert('Post Liked');
         } else {
-          throw 'Something went wrong';
+          console.log('You have already liked this post');
+          alert('You have already liked this post');
         }
       })
       .catch((error) => {
         console.log(error);
-        alert('Something went wrong when trying to accept this friend request');
+        alert('You have already liked this post');
       });
   };
 
-  rejectRequest = async (id) => {
+  dislikePost = async (userID, postID) => {
     let sessionToken = await AsyncStorage.getItem('token');
 
     if (sessionToken != null) {
@@ -93,8 +90,7 @@ class friendRequestsScreen extends Component {
     } else {
       return null;
     }
-
-    return fetch(`http://localhost:3333/api/1.0.0/friendrequests/${id}`, {
+    return fetch(`http://localhost:3333/api/1.0.0/user/${userID}/post/${postID}/like`, {
       method: 'DELETE',
       headers: {
         'X-Authorization': sessionToken,
@@ -102,55 +98,60 @@ class friendRequestsScreen extends Component {
     })
       .then((response) => {
         if (response.status === 200) {
-          console.log('Successfully rejected!');
-          alert('Request declined');
-          this.props.navigation.navigate('Profile');
-        } else if (response.status === 401) {
-          console.log('yes');
-        } else {
-          throw 'Something went wrong';
+          alert('Removed Like');
         }
       })
       .catch((error) => {
         console.log(error);
-        alert('Something went wrong when trying to decline this friend request');
+        alert('You have not previously liked this post');
       });
   };
 
   render() {
     return (
       <View style={styles.container}>
-        <View style={{ height: 765, width: 440, padding: 20 }}>
+        <View style={{ height: 700, width: 440, padding: 20 }}>
           <ScrollView style={styles.scrollView}>
-            <FlatList
-              keyExtractor={(item) => item.user_id}
-              data={this.state.searchResult}
-              renderItem={({ item }) => (
-                <View style={{ alignItems: 'row' }}>
-                  <Text
-                    style={styles.item}
-                  >
-                    {item.user_id}
-                    {' '}
-                    {' '}
-                    {' '}
-                    {item.first_name}
-                    {' '}
-                    {' '}
-                    {' '}
-                    {item.last_name}
-                  </Text>
+            <View>
+              <FlatList
+                keyExtractor={(item) => item.post_id}
+                data={this.state.postArray}
+                renderItem={({ item }) => (
                   <View style={{ alignItems: 'row' }}>
-                    <TouchableOpacity onPress={() => this.acceptRequest(item.user_id)}>
-                      <Text style={styles.sillyText}>Accept</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => this.rejectRequest(item.user_id)}>
-                      <Text style={styles.sillyText}>Decline</Text>
-                    </TouchableOpacity>
+                    <Text
+                      style={styles.item}
+                    >
+                      {'Post: '}
+                      {item.text}
+                      {'\n'}
+                      {'Date: '}
+                      {item.timestamp}
+                      {'\n'}
+                      {'Like count: '}
+                      {item.numLikes}
+                    </Text>
+                    <View style={{ alignItems: 'center' }}>
+                      <TouchableOpacity onPress={() => this.likePost(item.author.user_id, item.post_id)}>
+                        <Text style={{
+                          fontFamily: 'helvetica', fontSize: 20, color: 'green', lineHeight: 45,
+                        }}
+                        >
+                          Like
+                        </Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={() => this.dislikePost(item.author.user_id, item.post_id)}>
+                        <Text style={{
+                          fontFamily: 'helvetica', fontSize: 20, color: 'red', lineHeight: 45,
+                        }}
+                        >
+                          Remove like
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
                   </View>
-                </View>
-              )}
-            />
+                )}
+              />
+            </View>
           </ScrollView>
         </View>
       </View>
@@ -200,21 +201,6 @@ const styles = StyleSheet.create({
     margin: 5,
     width: 175,
   },
-  textBoxes: {
-    alignItems: 'center',
-    padding: 10,
-    borderColor: 'white',
-    borderWidth: 2,
-    borderRadius: '12px',
-    flex: 1,
-    margin: 5,
-    color: 'white',
-    width: 300,
-    fontFamily: 'helvetica',
-    marginTop: 20,
-    fontSize: 20,
-    lineHeight: 45,
-  },
   item: {
     marginTop: 24,
     padding: 30,
@@ -224,4 +210,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default friendRequestsScreen;
+export default friendPosts;

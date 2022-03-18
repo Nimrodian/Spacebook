@@ -21,6 +21,7 @@ import postScreen from './screens/Post';
 import myPosts from './screens/myPosts';
 import editPostScreen from './screens/editPost';
 import myDrafts from './screens/draftPosts';
+import friendPosts from './screens/friendPosts';
 
 //Creating stack navigator (main navigation for app)
 const Stack = createStackNavigator();
@@ -94,7 +95,7 @@ class App extends Component {
             component={postScreen}
           />
           <Stack.Screen
-            name="My posts"
+            name="Posts"
             component={myPosts}
           />
           <Stack.Screen
@@ -104,6 +105,10 @@ class App extends Component {
           <Stack.Screen
             name="My drafts"
             component={myDrafts}
+          />
+          <Stack.Screen
+            name='Friends posts'
+            component={friendPosts}
           />
         </Stack.Navigator>
       </NavigationContainer>

@@ -1,7 +1,8 @@
 /* eslint-disable react/destructuring-assignment */
 import React, { Component } from 'react';
 import {
-  TouchableOpacity, View, Text, StyleSheet, StatusBar, ScrollView, FlatList, Alert, TurboModuleRegistry, TextInput
+  TouchableOpacity, View, Text, StyleSheet,
+  StatusBar, ScrollView, TextInput,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -15,7 +16,6 @@ class myDrafts extends Component {
     this.state = {
       draft: '',
       isDraft: false,
-      id: ''
     };
   }
 
@@ -24,97 +24,94 @@ class myDrafts extends Component {
   }
 
   getDrafts = async () => {
-    let id = await AsyncStorage.getItem('userID');
-    let draftPost = await AsyncStorage.getItem(id);
+    const id = await AsyncStorage.getItem('userID');
+    const draftPost = await AsyncStorage.getItem(id);
 
-    if(draftPost !== null){
+    if (draftPost !== null) {
       this.setState({
         draft: draftPost,
-        isDraft: true
-      })
+        isDraft: true,
+      });
     }
   };
 
-  post =  async () =>{
-    let id = await AsyncStorage.getItem('userID');
+  post = async () => {
+    const id = await AsyncStorage.getItem('userID');
     let sessionToken = await AsyncStorage.getItem('token');
 
-    if(sessionToken != null){
+    if (sessionToken != null) {
       sessionToken = sessionToken.replaceAll('"', '');
-    }
-    else {
+    } else {
       return null;
     }
 
-    return fetch("http://localhost:3333/api/1.0.0/user/"+id+"/post" , {
+    return fetch(`http://localhost:3333/api/1.0.0/user/${id}/post`, {
       method: 'POST',
       headers: {
-          'X-Authorization': sessionToken,
-          'Content-Type':'application/json'
+        'X-Authorization': sessionToken,
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-          text : this.state.draft
-      })
-  })
-  .then((response) => {
-      if(response.status == 201){
-        console.log("successfully posted!");
-        this.deleteDraft();
-        //this.props.navigation.navigate('Home');
-      }
-      else if(response.status == 401){
-        console.log("yes");
-      }
-      else{
-        throw 'Something went wrong';
-      }
+        text: this.state.draft,
+      }),
     })
-  .catch((error) => {
-    console.log(error);
-    alert('Something went wrong when trying to post your draft');
-  })
+      .then((response) => {
+        if (response.status === 201) {
+          console.log('successfully posted!');
+          this.deleteDraft();
+        // this.props.navigation.navigate('Home');
+        } else if (response.status === 401) {
+          console.log('yes');
+        } else {
+          throw 'Something went wrong';
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+        alert('Something went wrong when trying to post your draft');
+      });
+  };
 
-  }
-
-  deleteDraft = async () =>{
-    console.log("draft removed from storage");
-    let id = await AsyncStorage.getItem('userID');
+  deleteDraft = async () => {
+    console.log('draft removed from storage');
+    const id = await AsyncStorage.getItem('userID');
     await AsyncStorage.removeItem(id);
     this.props.navigation.navigate('Home');
-  }
-
+  };
 
   render() {
-    if(this.state.isDraft == true){
+    if (this.state.isDraft === true) {
       return (
         <View style={styles.container}>
-          <View style={{height: 700}}>
-            <TextInput 
-                    multiline
-                    style={styles.textBoxes} 
-                    color='white'
-                    onChangeText={(draft) => this.setState({draft})}
-                    value={this.state.draft}
-                />
+          <View style={{ height: 700 }}>
+            <TextInput
+              multiline
+              style={styles.textBoxes}
+              color="white"
+              onChangeText={(draft) => this.setState({ draft })}
+              value={this.state.draft}
+            />
           </View>
-          <View style={{flexDirection: 'row', alignItems: '', justifyContent: 'center'}}>
-                  <TouchableOpacity
-                    style={styles.button}
-                    onPress={this.post}>
-                    <Text style={styles.sillyText}>Post draft</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={styles.button}
-                    onPress={this.deleteDraft}>
-                    <Text style={styles.sillyText}>Delete draft</Text>
-                  </TouchableOpacity>
-              </View>
+          <View style={{ flexDirection: 'row', alignItems: '', justifyContent: 'center' }}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={this.post}
+            >
+              <Text style={styles.sillyText}>Post draft</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={this.deleteDraft}
+            >
+              <Text style={styles.sillyText}>Delete draft</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       );
     }
-    else{
-      return(
-        <View style={styles.container}>
+
+    return (
+      <View style={styles.container}>
         <View style={{ height: 760, width: 440, padding: 20 }}>
           <ScrollView style={styles.scrollView}>
             <Text style={styles.sillyText}>
@@ -122,9 +119,8 @@ class myDrafts extends Component {
             </Text>
           </ScrollView>
         </View>
-        </View>
-      );
-    }
+      </View>
+    );
   }
 }
 
@@ -132,12 +128,12 @@ const styles = StyleSheet.create({
   container: {
     paddingTop: StatusBar.currentHeight,
     flex: 1,
-    //justifyContent: 'center',
+    // justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#4267B2',
     borderColor: 'white',
     borderWidth: 2,
-    borderRadius:'20px'
+    borderRadius: '20px',
   },
   scrollView: {
     backgroundColor: '#1F3366',
@@ -147,20 +143,20 @@ const styles = StyleSheet.create({
     borderRadius: '20px',
   },
   textBoxes: {
-    alignItems: "center",
+    alignItems: 'center',
     padding: 10,
     borderColor: 'white',
-    borderWidth:2,
-    borderRadius:'12px',
+    borderWidth: 2,
+    borderRadius: '12px',
     flex: 1,
     margin: 5,
-    color: 'white', 
+    color: 'white',
     width: 365,
     height: 650,
     fontFamily: 'helvetica',
     marginTop: 20,
     fontSize: 20,
-    lineHeight: 45
+    lineHeight: 45,
   },
   background: {
     position: 'absolute',
