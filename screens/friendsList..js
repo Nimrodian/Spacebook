@@ -14,10 +14,13 @@ class FriendListScreen extends Component {
     };
   }
 
+  //Upon screen mounting, friendSearch method is called.
   componentDidMount() {
     this.friendSearch();
   }
 
+  //Async Method to retrieve a users friend list so it can be rendered in the
+  //Flatlist in the render function. 
   friendSearch = async () => {
     const id = this.props.route.params.profileID;
     let sessionToken = await AsyncStorage.getItem('token');
@@ -35,6 +38,9 @@ class FriendListScreen extends Component {
     })
       .then((response) => {
         if (response.status === 200) {
+          //Sets the areFriends value to true if the call is OK
+          //Because if it's okay, then the user logged in should be 
+          //able to see this users friends.
           this.setState({
             areFriends: true,
           });
@@ -55,6 +61,11 @@ class FriendListScreen extends Component {
       });
   };
 
+  /*Method to be called when a flatlist item is selected.
+  If selected, the item selected is passed into this method,
+  where the id of the item is stored and then the user is 
+  navigated to the appropriate user profile they have chosen.
+  */
   actionOnRow = async (item) => {
     const id = await AsyncStorage.getItem('userID');
     this.setState({
@@ -70,6 +81,12 @@ class FriendListScreen extends Component {
     }
   };
 
+  /*Render function to display the JSX of this friends list screen
+  With a flatlist to display their list of friends. If the logged in
+  user is friends with the user selected then it will display their friends
+  list, if not they will be greeted with a simple messaged informing them
+  they can not view this users friends (as per Spacebook rules).
+  */
   render() {
     if (this.state.areFriends === true) {
       return (
@@ -118,6 +135,7 @@ class FriendListScreen extends Component {
   }
 }
 
+//style sheet initialised.
 const styles = StyleSheet.create({
   container: {
     paddingTop: StatusBar.currentHeight,

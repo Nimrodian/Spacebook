@@ -5,6 +5,7 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+
 class HomeScreen extends Component {
   constructor(props) {
     super(props);
@@ -13,10 +14,13 @@ class HomeScreen extends Component {
     };
   }
 
+  //When screen is mounted (upon login) then method is called to get list of users friends.
   async componentDidMount() {
     this.getFriends();
   }
 
+  //Method to loop through users friend list (retrieved with 'getFriends') and get all their posts.
+  //Where they are appended to an array of all posts from all users friends.
   getAllPosts = async (response) => {
     let sessionToken = await AsyncStorage.getItem('token');
 
@@ -49,12 +53,15 @@ class HomeScreen extends Component {
           alert('Something went wrong while trying to get your friends posts');
         });
     }
+    //Here the array of posts is sorted by date (descending) so newest posts from friends 
+    //appear first on a users homepage. The new state is then set to the class.
     allPosts = allPosts.sort((y, x) => new Date(x.timestamp) - new Date(y.timestamp));
     this.setState({
       postArray: allPosts,
     });
   };
 
+  //Logout method, simplest endpoint. Called when logout button is pressed.
   logout = async () => {
     let sessionToken = await AsyncStorage.getItem('token');
 
@@ -85,6 +92,8 @@ class HomeScreen extends Component {
       });
   };
 
+  //Method called upon mount to get a list of users friends, with the response
+  //JSON being passed to the getAllPosts method to retrieve all posts from all users.
   getFriends = async () => {
     const id = await AsyncStorage.getItem('userID');
     let sessionToken = await AsyncStorage.getItem('token');
@@ -118,19 +127,26 @@ class HomeScreen extends Component {
       });
   };
 
+  //Method to navigate user to their profile page when they click the profile button.
   myProfile = () => {
     this.props.navigation.navigate('Profile');
   };
 
+  //Method to navigate the user to the search box when they click the search button.
   search = () => {
     this.props.navigation.navigate('Search');
   };
 
+  //Method to navigate a user to the write a post page, when they click the post button.
   post = async () => {
-    console.log('Post');
     this.props.navigation.navigate('Write a post');
   };
 
+  /*Method to let a user like a post, fetch works as any other. When the user presses the like
+  post button under a post, the id of that post along with the id of the user who posted it is 
+  passed to this method, where the API call is made. The clickable posts are stored in a 
+  flatlist in render.
+  */
   likePost = async (userID, postID) => {
     let sessionToken = await AsyncStorage.getItem('token');
 
@@ -159,6 +175,8 @@ class HomeScreen extends Component {
       });
   };
 
+  //Same as the likePost method above, except the API call method is DELETE, rather than 
+  //POST.
   dislikePost = async (userID, postID) => {
     let sessionToken = await AsyncStorage.getItem('token');
 
@@ -184,6 +202,8 @@ class HomeScreen extends Component {
       });
   };
 
+  //Render the JSX for this screen. Note the two buttons that are displayed for each 
+  //element of the flatlist.
   render() {
     return (
       <View style={styles.container}>
@@ -263,6 +283,7 @@ class HomeScreen extends Component {
   }
 }
 
+//style sheet created.
 const styles = StyleSheet.create({
   container: {
     paddingTop: StatusBar.currentHeight,

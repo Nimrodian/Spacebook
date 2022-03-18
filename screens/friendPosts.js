@@ -14,10 +14,17 @@ class FriendPosts extends Component {
     };
   }
 
+  //On component mount, method getAllPosts is called
   async componentDidMount() {
     this.getAllPosts();
   }
 
+  /*Method to retrieve all of the posts of one particular friend of the logged in user
+  It takes the route profileID provided when this component is called, (otherProfile screen)
+  and performs a GET request to retrieve a JSON object of all of their posts. From this it is 
+  set to the state value postArray. An array that can be displayed in the flatlist in the 
+  render function.
+  */
   getAllPosts = async () => {
     let sessionToken = await AsyncStorage.getItem('token');
 
@@ -36,10 +43,12 @@ class FriendPosts extends Component {
           return response.json();
         } else {
           alert('You can not view the posts of a user you are not friends with');
+          //Navigates the user back to the search screen if they are not friends.
           this.props.navigation.navigate('Search');
         }
       })
       .then((responseJson) => {
+        //JSON result is set to postArray here. So it can be displayed in the Flatlist below.
         this.setState({
           postArray: responseJson,
         });
@@ -50,6 +59,11 @@ class FriendPosts extends Component {
       });
   };
 
+  /*Method to let a user like a post, fetch works as any other. When the user presses the like
+  post button under a post, the id of that post along with the id of the user who posted it is 
+  passed to this method, where the API call is made. The clickable posts are stored in a 
+  flatlist in render.
+  */
   likePost = async (userID, postID) => {
     let sessionToken = await AsyncStorage.getItem('token');
 
@@ -78,6 +92,8 @@ class FriendPosts extends Component {
       });
   };
 
+  //Same as the likePost method above, except the API call method is DELETE, rather than 
+  //POST.
   dislikePost = async (userID, postID) => {
     let sessionToken = await AsyncStorage.getItem('token');
 
@@ -103,6 +119,7 @@ class FriendPosts extends Component {
       });
   };
 
+  //Render function to display the JSX of this list of friends posts screen.
   render() {
     return (
       <View style={styles.container}>
@@ -155,6 +172,7 @@ class FriendPosts extends Component {
   }
 }
 
+//style sheet initialised.
 const styles = StyleSheet.create({
   container: {
     paddingTop: StatusBar.currentHeight,

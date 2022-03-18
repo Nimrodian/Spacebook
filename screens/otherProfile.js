@@ -8,6 +8,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
 import 'react-native-gesture-handler';
 
+//This whole class is very similar to that of the 'Profile' Screen 
+//with a few minor differences in buttons available to the end user.
 class OtherProfile extends Component {
   constructor(props) {
     super(props);
@@ -21,6 +23,11 @@ class OtherProfile extends Component {
     };
   }
 
+  /*On component mount, call the getData method, and the getProfilePic method.
+  Since this is a profile different to the user that is logged in. The profileID
+  string is initially set to the profileID passed through to this component. Seen 
+  under the method calls below.
+  */
   componentDidMount() {
     this.getData();
     this.getProfilePic();
@@ -29,6 +36,11 @@ class OtherProfile extends Component {
     });
   }
 
+  /*This method is the first called and is used to populate the profile fields seen
+  in the constructor above. Once the GET request for the user information has been OK'd
+  this.setState will be used to update the name/email/etc fields of the user, to be 
+  displayed in the JSX in the render function below.
+  */
   getData = async () => {
     const id = this.props.route.params.profileID;
     let sessionToken = await AsyncStorage.getItem('token');
@@ -62,6 +74,8 @@ class OtherProfile extends Component {
       })
       .then((responseJson) => {
         if (responseJson !== undefined) {
+          //This is where the responseJson is parsed and used to set the 
+          //state of the users information.
           this.setState({
             firstName: responseJson.first_name,
             lastName: responseJson.last_name,
@@ -76,12 +90,16 @@ class OtherProfile extends Component {
       });
   };
 
+  //This method is called when the logged in user wants to view the friends list
+  //of this user. It will navigate the end-user to the friends list screen, passing
+  //along the ID of the profile page they have selected.
   getFriendList = async () => {
     this.props.navigation.navigate('friendsList', {
       profileID: this.state.profileID,
     });
   };
 
+  //Method to get the profile pic of the user, similar to the getData method above.
   getProfilePic = async () => {
     const id = this.props.route.params.profileID;
     let sessionToken = await AsyncStorage.getItem('token');
@@ -101,6 +119,8 @@ class OtherProfile extends Component {
       .then((res) => res.blob())
       .then((resBlob) => {
         const pic = URL.createObjectURL(resBlob);
+        //Here the profilePicture is set in the constructor to whatever picture 
+        //is returned by the API
         this.setState({
           profilePicture: pic,
         });
@@ -111,6 +131,9 @@ class OtherProfile extends Component {
       });
   };
 
+  /*This method is called when the user tries to add this profile as a friend,
+  the POST request is made with the ID of the current page.
+  */
   addAsFriend = async () => {
     const id = this.props.route.params.profileID;
     let sessionToken = await AsyncStorage.getItem('token');
@@ -141,12 +164,16 @@ class OtherProfile extends Component {
       });
   };
 
+  //This method is called when the logged in user presses the view posts button
+  //which will navigate them to the 'friends posts' screen, passing along the profileID
+  //of whichever user they are looking at.
   viewPosts = async () => {
     this.props.navigation.navigate('Friends posts', {
       profileID: this.state.profileID,
     });
   };
 
+  //Render function to display the JSX of this other profile screen.
   render() {
     return (
       <View style={styles.container}>
@@ -212,6 +239,7 @@ class OtherProfile extends Component {
   }
 }
 
+//Style sheet initialised.
 const styles = StyleSheet.create({
   scrollView: {
     backgroundColor: '#1F3366',

@@ -6,9 +6,14 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// TO-DO list for this screen.
-// 1. Implement some kind of scroll view (week 3 lab sheet), to scroll through posts
-// 2. Posting to an API
+/*
+here the class component is instantiated for the user to view their
+draft posts. The constructor takes in props, to allow the screen to 
+use the Stack navigation used throughout the application. It also
+sets the state of draft (the text of the draft selected) and 
+isDraft, which is set to true or false, depending on if a draft is 
+present or not.
+*/
 
 class MyDrafts extends Component {
   constructor(props) {
@@ -19,14 +24,27 @@ class MyDrafts extends Component {
     };
   }
 
+  /*
+  Built-in function 'componentDidMount' that is automatically called
+  when a component (this screen in this case) is mounted (called). 
+  This just means the screen is automatically populated with the draft
+  posts upon mounting, since the function primarily calls the 'getDrafts()
+  method.
+  */
   async componentDidMount() {
     this.getDrafts();
   }
 
+  /*method (called in mount) to await AsyncStorage and retrieves the draft
+  post associated with the user ID of the currently logged in user.
+  */
   getDrafts = async () => {
     const id = await AsyncStorage.getItem('userID');
     const draftPost = await AsyncStorage.getItem(id);
 
+    /*Checks if the draft post value in storage is null, if not then set
+    the value in state, to the draft post string. So it can be posted or deleted.
+    */
     if (draftPost !== null) {
       this.setState({
         draft: draftPost,
@@ -35,10 +53,20 @@ class MyDrafts extends Component {
     }
   };
 
+
+  /*Post function that posts the draft if the user selects the post draft button
+  works like all other API requests in this app. Body of the request is 
+  the draft string pulled from the state of this class (set in 'getDrafts')
+  */
   post = async () => {
     const id = await AsyncStorage.getItem('userID');
     let sessionToken = await AsyncStorage.getItem('token');
 
+    /*
+    This if statement is very hacky, for some reason I could not get a fetch 
+    request to work without replacing the ' with a " in the sessionToken. It is 
+    poor practice I know, but that is my explanation for its prescence.
+    */
     if (sessionToken != null) {
       sessionToken = sessionToken.replaceAll('"', '');
     } else {
@@ -55,11 +83,14 @@ class MyDrafts extends Component {
         text: this.state.draft,
       }),
     })
+    /*If response is OK, then draft has been posted with above fetch, and is
+    subsequently deleted from the Async storage, by calling the deleteDraft
+    method below. Else, show an error alert and catch the error.
+    */
       .then((response) => {
         if (response.status === 201) {
           console.log('successfully posted!');
           this.deleteDraft();
-        // this.props.navigation.navigate('Home');
         } else if (response.status === 401) {
           console.log('yes');
         } else {
@@ -72,6 +103,7 @@ class MyDrafts extends Component {
       });
   };
 
+  //Delete draft function for if the user either posts or deletes the draft.
   deleteDraft = async () => {
     console.log('draft removed from storage');
     const id = await AsyncStorage.getItem('userID');
@@ -79,6 +111,10 @@ class MyDrafts extends Component {
     this.props.navigation.navigate('Home');
   };
 
+  /*This is a conditional render function. If there is a draft in storage, 
+  it will display the first return block, with the contents of the draft,
+  if not - it will display a simple screen stating there are no drafts.
+  */
   render() {
     if (this.state.isDraft === true) {
       return (
@@ -124,11 +160,12 @@ class MyDrafts extends Component {
   }
 }
 
+//Style sheet created with all the necessary styles for this screen.
+
 const styles = StyleSheet.create({
   container: {
     paddingTop: StatusBar.currentHeight,
     flex: 1,
-    // justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#4267B2',
     borderColor: 'white',

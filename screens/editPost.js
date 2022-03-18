@@ -12,10 +12,16 @@ class EditPostScreen extends Component {
     };
   }
 
+  //When component has mounted, the method getPost is automatically called
   componentDidMount() {
     this.getPost();
   }
 
+  /*this method is called when a user selects edit post on one of their 
+  pre-existing posts. This method simply gets the string of the post and sets
+  it to the state in the constructor so it can be altered from the JSX in the 
+  render function below.
+  */
   getPost = async () => {
     const id = await AsyncStorage.getItem('userID');
     let sessionToken = await AsyncStorage.getItem('token');
@@ -39,6 +45,7 @@ class EditPostScreen extends Component {
         }
       })
       .then((responseJson) => {
+        //Here the response string is set to the postString in constructor.
         this.setState({
           postString: responseJson.text,
         });
@@ -49,6 +56,11 @@ class EditPostScreen extends Component {
       });
   };
 
+  /*This method is called when the user clicks to save their changes. The PATCH request
+  simply sends an API call with a body containing the state string of the text field 
+  containing their newly updated post. Once succesfully updated the user will be navigated 
+  back to their profile page.
+  */
   editPost = async () => {
     const id = await AsyncStorage.getItem('userID');
     let sessionToken = await AsyncStorage.getItem('token');
@@ -80,6 +92,7 @@ class EditPostScreen extends Component {
       });
   };
 
+  //Render function to display the JSX for this edit post screen
   render() {
     return (
       <View style={styles.container}>
@@ -105,6 +118,7 @@ class EditPostScreen extends Component {
   }
 }
 
+//Style sheet initialised.
 const styles = StyleSheet.create({
   container: {
     paddingTop: StatusBar.currentHeight,

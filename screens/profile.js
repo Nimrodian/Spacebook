@@ -20,11 +20,17 @@ class ProfileScreen extends Component {
     };
   }
 
+  /*When screen is mounted, two methods are called to get the data of the logged in 
+  user. getProfilePic (for profile picture) and getData for the rest of user info needed.
+  */
   componentDidMount() {
     this.getData();
     this.getProfilePic();
   }
 
+  //Method to retrieve the user information of the logged in member. The API call response body
+  //Is then used to set the state of the class so it can be displayed in the JSX render
+  //Function below.
   getData = async () => {
     const id = await AsyncStorage.getItem('userID');
     let sessionToken = await AsyncStorage.getItem('token');
@@ -51,6 +57,7 @@ class ProfileScreen extends Component {
           return response.json();
         }
         if (response.status === 401) {
+          //If error, take user back to login page, as they are no longer safely authorised.
           this.props.navigation.navigate('Login');
         } else {
           throw 'Something went wrong';
@@ -64,12 +71,11 @@ class ProfileScreen extends Component {
             email: responseJson.email,
             friendCount: responseJson.friend_count,
           });
-          console.log(responseJson);
-          console.log(this.state.firstName);
         }
       });
   };
 
+  //Method to get the profile pic of the user, similar to the getData method above.
   getProfilePic = async () => {
     const id = await AsyncStorage.getItem('userID');
     let sessionToken = await AsyncStorage.getItem('token');
@@ -88,6 +94,7 @@ class ProfileScreen extends Component {
     })
       .then((res) => res.blob())
       .then((resBlob) => {
+        //resBlob object is then set in the state as the picture file.
         const pic = URL.createObjectURL(resBlob);
         this.setState({
           profilePicture: pic,
@@ -95,16 +102,18 @@ class ProfileScreen extends Component {
       });
   };
 
+  //Method to navigate user to update their profile page, when update button is clicked
   updateProfile = () => {
     this.props.navigation.navigate('Update Profile');
   };
 
+  //Method to navigate the user back to the home screen.
   backHome = () => {
     this.props.navigation.navigate('Home');
   };
 
+  //Method to navigate the user to their friends list page, taking their ID as a param.
   friendsList = async () => {
-    console.log('yes lad');
     const id = await AsyncStorage.getItem('userID');
 
     this.props.navigation.navigate('friendsList', {
@@ -112,15 +121,18 @@ class ProfileScreen extends Component {
     });
   };
 
+  //Method to navigate a user to the page showing their friend requests.
   friendRequests = async () => {
     console.log('friend requests button');
     this.props.navigation.navigate('friendRequests');
   };
 
+  //Method to navigate a user to the page showing all of their posts.
   myPosts = async () => {
     this.props.navigation.navigate('Posts');
   };
 
+  //Render function for this screen to show the JSX below.
   render() {
     return (
       <View style={styles.container}>
@@ -191,6 +203,7 @@ class ProfileScreen extends Component {
   }
 }
 
+//Style sheet initialised.
 const styles = StyleSheet.create({
   scrollView: {
     backgroundColor: '#1F3366',

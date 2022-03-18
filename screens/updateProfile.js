@@ -21,6 +21,12 @@ class UpdateProfile extends Component {
     };
   }
 
+  /*This method is called when the user clicks the button to update their
+  profile data. The body of the request is taken from the state of the class, 
+  which is in turn is populated by the entry fields on this screen/JSX below.
+  If successfully updated, the user will be navigated back to their profile 
+  screen.
+  */
   updateProfile = async () => {
     const id = await AsyncStorage.getItem('userID');
     let sessionToken = await AsyncStorage.getItem('token');
@@ -60,10 +66,14 @@ class UpdateProfile extends Component {
       });
   };
 
+  //Method called when logged in user clicks to update their profile picture
+  //This requires a seperate screen to operate the camera, hence the user
+  //is navigated to the Upload Photo screen.
   updatePicture = () => {
     this.props.navigation.navigate('uploadPhoto');
   };
 
+  //Render function to display the JSX of this profile update screen.
   render() {
     return (
       <View style={styles.container}>
@@ -133,6 +143,7 @@ class UpdateProfile extends Component {
   }
 }
 
+//Style sheet initialised.
 const styles = StyleSheet.create({
   container: {
     paddingTop: StatusBar.currentHeight,

@@ -16,6 +16,8 @@ class RegisterScreen extends Component {
     };
   }
 
+  //Method to register a new user, with the request body being pulled from the state
+  //of this class, where that is set via the entry fields of the JSX.
   register = async () => fetch(
     'http://localhost:3333/api/1.0.0/user/',
     {
@@ -43,18 +45,23 @@ class RegisterScreen extends Component {
       }
     })
     .then((responseJson) => {
+      //If successful, navigate the user back to the login page.
       console.log('User created with ID: ', responseJson);
       this.props.navigation.navigate('Login');
     })
     .catch((error) => {
       console.log(error);
-      alert('Account already exists');
+      alert('Please enter valid registration values. Account may already exist.');
     });
 
+  //Method to take user back to the login page if they select the button stating
+  //they already have an account.
   goBack = () => {
     this.props.navigation.navigate('Login');
   };
 
+  //Method to check that the user has entered the correct fields to register a user
+  //If they have then the main register method is called.
   registerCheck = () => {
     if (this.state.firstName === '' || this.state.lastName === '') {
       alert('Please enter data into all fields.');
@@ -64,6 +71,7 @@ class RegisterScreen extends Component {
     }
   };
 
+  //render function to show the JSX for this register screen.
   render() {
     return (
       <View style={styles.container}>
@@ -133,6 +141,7 @@ class RegisterScreen extends Component {
   }
 }
 
+//Style sheet initialised.
 const styles = StyleSheet.create({
   container: {
     paddingTop: StatusBar.currentHeight,

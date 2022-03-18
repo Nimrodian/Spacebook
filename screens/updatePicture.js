@@ -16,11 +16,23 @@ class UpdatePictureScreen extends Component {
     };
   }
 
+  //On component mounting will await for permissions to access
+  //the camera to be accepted. And set the class state of it to
+  //'granted' when accepted bu the user.
   async componentDidMount() {
     const { status } = await Camera.requestCameraPermissionsAsync();
     this.setState({ hasPermission: status === 'granted' });
   }
 
+  /*This method is called from the takePicture method, once a user
+  has taken their picture successfully. This method serves to upload
+  said picture to the API to tie it to the user in question. The only 
+  real difference from all of the other POST requests in this app is 
+  that this one takes a body of blob rather than a string or an object.
+  If the picture is successfully uploaded the user will be redirected
+  back to their homescreen, if not, be alerted of an error and prompted 
+  to try again.
+  */
   sendToServer = async (data) => {
     // get id and token from async storage.
     const id = await AsyncStorage.getItem('userID');
@@ -55,6 +67,13 @@ class UpdatePictureScreen extends Component {
       });
   };
 
+
+  /*This method is called when the user selects the 'take picture' button, 
+  and it has a nifty if statement to check if the permissions have been granted
+  (see componentDidMount above) for the app to access the devices camera. if 
+  so, it will take the picture and then call the method sendToServer, passing
+  the image data with it.   
+  */
   takePicture = async () => {
     if (this.camera) {
       const options = {
@@ -66,6 +85,8 @@ class UpdatePictureScreen extends Component {
     }
   };
 
+  //Render function to show the live feed of the camera for this
+  //update picture screen 
   render() {
     if (this.state.hasPermission) {
       return (
@@ -96,6 +117,7 @@ class UpdatePictureScreen extends Component {
   }
 }
 
+//Style sheet initialised.
 const styles = StyleSheet.create({
   buttonContainer: {
     backgroundColor: 'transparent',

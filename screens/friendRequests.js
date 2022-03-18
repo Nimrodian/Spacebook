@@ -13,10 +13,16 @@ class FriendRequestsScreen extends Component {
     };
   }
 
+  //On screen mount, the search method is called.
   componentDidMount() {
     this.search();
   }
 
+  /*This method is automatically ran through componentDidMount.
+  And it essentially just performs an API GET request to see if the
+  logged in user has any incoming friend requests. If so, they will 
+  be stored in the searchResult array (initialised in the class constructor).
+  */
   search = async () => {
     let sessionToken = await AsyncStorage.getItem('token');
 
@@ -43,6 +49,8 @@ class FriendRequestsScreen extends Component {
         }
       })
       .then((responseJson) => {
+        //the response list of requests is set into the array to 
+        //display in the JSX render function
         this.setState({
           searchResult: responseJson,
         });
@@ -53,6 +61,11 @@ class FriendRequestsScreen extends Component {
       });
   };
 
+  /*When a user selects the button to accept a friend request 
+  this method is called, with the id of the friend being passed into
+  this method. From here a POST request is made to the API to accept
+  the request. If OK, user is directed back to their profile page.
+  */
   acceptRequest = async (id) => {
     let sessionToken = await AsyncStorage.getItem('token');
 
@@ -85,6 +98,9 @@ class FriendRequestsScreen extends Component {
       });
   };
 
+  /*This method works the exact same as the acceptRequest method, however it is a 
+  delete request and will also direct the user back to their profile screen.
+  */
   rejectRequest = async (id) => {
     let sessionToken = await AsyncStorage.getItem('token');
 
@@ -117,6 +133,7 @@ class FriendRequestsScreen extends Component {
       });
   };
 
+  //Render function to display the JSX of the friend request screen
   render() {
     return (
       <View style={styles.container}>
@@ -158,6 +175,7 @@ class FriendRequestsScreen extends Component {
   }
 }
 
+//Style sheet initialised.
 const styles = StyleSheet.create({
   container: {
     paddingTop: StatusBar.currentHeight,

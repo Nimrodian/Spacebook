@@ -5,8 +5,8 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+
 export default class LoginScreen extends Component {
-  // Remember 'props' just stands for properties, if you get a little confused Joe
   constructor(props) {
     super(props);
     this.state = {
@@ -15,6 +15,9 @@ export default class LoginScreen extends Component {
     };
   }
 
+  /*Method to log user in, called when login button pressed.
+  Body of request is pulled from entry fields.
+  */
   login = async () => fetch(
     'http://localhost:3333/api/1.0.0/login',
     {
@@ -26,6 +29,9 @@ export default class LoginScreen extends Component {
       }),
     },
   )
+  /*if request is OK, return responseJson. From there the ID and Auth token are stored 
+  in AsyncStorage. User is then navigated to the home screen once successfully logged in
+  */
     .then((response) => {
       if (response.status === 200) {
         return response.json();
@@ -37,6 +43,7 @@ export default class LoginScreen extends Component {
       }
     })
     .then(async (responseJson) => {
+      //Setting the ID and Auth token in AsyncStorage for future use.
       await AsyncStorage.setItem('userID', JSON.stringify(responseJson.id));
       await AsyncStorage.setItem('token', JSON.stringify(responseJson.token));
     })
@@ -78,10 +85,12 @@ export default class LoginScreen extends Component {
       });
   };
 
+  //Method to navigate user to registration page when register button is pressed.
   register = () => {
     this.props.navigation.navigate('Register');
   };
 
+  //render function to display Apps JSX.
   render() {
     return (
       <View style={styles.container}>
@@ -140,6 +149,7 @@ export default class LoginScreen extends Component {
   }
 }
 
+//Style sheet created.
 const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',

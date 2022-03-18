@@ -16,10 +16,18 @@ class MyPosts extends Component {
     };
   }
 
+  //On component mount, getAllPosts method is called.
   async componentDidMount() {
     this.getAllPosts();
   }
 
+  /*This method works similarily to the getAllPosts in the home screen.
+  Although this one does not need to loop, because it is just getting the 
+  posts for one user, the user logged in. Once successfully retrieved,
+  this method will set the responseJSON to the postArray Array in the 
+  constructor. Where it can then be displayed in the flatlist in the render
+  function.
+  */
   getAllPosts = async () => {
     const id = await AsyncStorage.getItem('userID');
     let sessionToken = await AsyncStorage.getItem('token');
@@ -40,6 +48,7 @@ class MyPosts extends Component {
         }
       })
       .then((responseJson) => {
+        //Response is set to the new Array in state here.
         this.setState({
           postArray: responseJson,
         });
@@ -50,6 +59,12 @@ class MyPosts extends Component {
       });
   };
 
+  /*This method allows the logged in user to delete one of their own posts.
+  When the user clicks the delete post button, this method is called, with 
+  the ID of the post being passed in. The userID needed to make the API call 
+  is just taken from AsyncStorage, as it's just the user that is logged in.
+  If successfully deleted, the user is navigated back to their profile screen.
+  */
   deletePost = async (postID) => {
     const id = await AsyncStorage.getItem('userID');
     let sessionToken = await AsyncStorage.getItem('token');
@@ -78,10 +93,13 @@ class MyPosts extends Component {
       });
   };
 
+  //This method just navigates a user to their draft page, when the draft button is clicked.
   drafts = () => {
     this.props.navigation.navigate('My drafts');
   };
 
+  //This method navigates a user to the edit post screen to edit the post they have selected 
+  //to edit from the flat list in the render below.
   editPost(postID) {
     console.log(`${postID}yes`);
     this.props.navigation.navigate('Edit your post', {
@@ -89,6 +107,7 @@ class MyPosts extends Component {
     });
   }
 
+  //Render function to display the JSX of this myPosts screen.
   render() {
     return (
       <View style={styles.container}>
@@ -151,6 +170,7 @@ class MyPosts extends Component {
   }
 }
 
+//Style sheet initialised.
 const styles = StyleSheet.create({
   container: {
     paddingTop: StatusBar.currentHeight,

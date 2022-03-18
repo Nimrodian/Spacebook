@@ -13,6 +13,13 @@ class PostScreen extends Component {
     };
   }
 
+  /*This method is used to post a string value to the API from a users
+  text input in the JSX below. It is called from the post button on this screen.
+  The body of the request is pulled from the state of this class - postString. 
+  postString is edited when a user input a string into the text input in the JSX 
+  render function below. If the user successfully posts their message they will be
+  redirected to their home screen.
+  */
   post = async () => {
     const id = await AsyncStorage.getItem('userID');
     let sessionToken = await AsyncStorage.getItem('token');
@@ -44,12 +51,18 @@ class PostScreen extends Component {
       });
   };
 
+  /*This method is called when the user doesn't want to post their message
+  but instead wants to save it as a draft post. This code will set an AsyncStorage
+  value with the key - their ID and the value - the string of the text post. Then,
+  the user will again, be redirected to their home screen.
+  */
   saveDraft = async () => {
     const id = await AsyncStorage.getItem('userID');
     await AsyncStorage.setItem(id, this.state.postString);
     this.props.navigation.navigate('Home');
   };
 
+  //Render function to display the JSX for this Post message screen.
   render() {
     return (
       <View style={styles.container}>
@@ -83,6 +96,7 @@ class PostScreen extends Component {
   }
 }
 
+//Style sheet created.
 const styles = StyleSheet.create({
   container: {
     paddingTop: StatusBar.currentHeight,

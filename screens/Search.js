@@ -7,10 +7,6 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
-// TO-DO list for this screen.
-// 1. Implement some kind of scroll view (week 3 lab sheet), to scroll through posts
-// 2. Posting to an API
-
 class SearchScreen extends Component {
   constructor(props) {
     super(props);
@@ -21,6 +17,11 @@ class SearchScreen extends Component {
     };
   }
 
+  /*Method that takes the search string entered by the user and posts the API
+  with said value. The parameters of this API call is the search string (stored
+    in the state above, and set when the user clicks the go button), and the 
+    scope of the search (search_in).
+  */
   search = async () => {
     let sessionToken = await AsyncStorage.getItem('token');
 
@@ -51,6 +52,7 @@ class SearchScreen extends Component {
         }
       })
       .then((responseJson) => {
+        //Result of the search is set here, into an empty array, instantiated in the state of this class.
         this.setState({
           searchResult: responseJson,
         });
@@ -61,6 +63,11 @@ class SearchScreen extends Component {
       });
   };
 
+  /*Method called when the user clicks on any of the search results. Once clicked,
+  this method will navigate the user to the profile of the user they clicked, 
+  doing so by navigating and passing the ID of the user clicked with it. If the user
+  clicked is themselves, it will pass the alreadys stored ID of the logged in user.
+  */
   actionOnRow = async (item) => {
     const id = await AsyncStorage.getItem('userID');
     this.setState({
@@ -76,6 +83,7 @@ class SearchScreen extends Component {
     }
   };
 
+  //Render of the JSX for this screen.
   render() {
     return (
       <View style={styles.container}>
