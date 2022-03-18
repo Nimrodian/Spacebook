@@ -4,7 +4,7 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-class friendListScreen extends Component {
+class FriendListScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -186,4 +186,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default friendListScreen;
+export default FriendListScreen;

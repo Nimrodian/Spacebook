@@ -6,7 +6,7 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
 
-class profileScreen extends Component {
+class ProfileScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -276,4 +276,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default profileScreen;
+export default ProfileScreen;

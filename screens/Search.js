@@ -11,7 +11,7 @@ import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 // 1. Implement some kind of scroll view (week 3 lab sheet), to scroll through posts
 // 2. Posting to an API
 
-class searchScreen extends Component {
+class SearchScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -192,4 +192,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default searchScreen;
+export default SearchScreen;

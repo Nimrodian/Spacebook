@@ -5,7 +5,7 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default class loginScreen extends Component {
+export default class LoginScreen extends Component {
   // Remember 'props' just stands for properties, if you get a little confused Joe
   constructor(props) {
     super(props);

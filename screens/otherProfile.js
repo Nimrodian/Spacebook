@@ -8,7 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
 import 'react-native-gesture-handler';
 
-class otherProfile extends Component {
+class OtherProfile extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -297,4 +297,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default otherProfile;
+export default OtherProfile;

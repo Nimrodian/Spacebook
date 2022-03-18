@@ -4,7 +4,7 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-class editPostScreen extends Component {
+class EditPostScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -171,4 +171,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default editPostScreen;
+export default EditPostScreen;

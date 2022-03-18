@@ -5,7 +5,7 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-class postScreen extends Component {
+class PostScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -149,4 +149,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default postScreen;
+export default PostScreen;

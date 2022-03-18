@@ -5,7 +5,7 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
-class registerScreen extends Component {
+class RegisterScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -178,4 +178,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default registerScreen;
+export default RegisterScreen;

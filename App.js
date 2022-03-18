@@ -7,21 +7,21 @@ import 'react-native-gesture-handler';
 Importing the necessary screens to be instantiated as
 stack screens
 */
-import loginScreen from './screens/login';
-import homeScreen from './screens/home';
-import registerScreen from './screens/register';
-import profileScreen from './screens/profile';
-import updateProfile from './screens/updateProfile';
-import searchScreen from './screens/Search';
-import otherProfileScreen from './screens/otherProfile';
-import updatePictureScreen from './screens/updatePicture';
-import friendListScreen from './screens/friendsList.';
-import friendRequestsScreen from './screens/friendRequests';
-import postScreen from './screens/Post';
-import myPosts from './screens/myPosts';
-import editPostScreen from './screens/editPost';
-import myDrafts from './screens/draftPosts';
-import friendPosts from './screens/friendPosts';
+import LoginScreen from './screens/login';
+import HomeScreen from './screens/home';
+import RegisterScreen from './screens/register';
+import ProfileScreen from './screens/profile';
+import UpdateProfile from './screens/updateProfile';
+import SearchScreen from './screens/Search';
+import OtherProfileScreen from './screens/otherProfile';
+import UpdatePictureScreen from './screens/updatePicture';
+import FriendListScreen from './screens/friendsList.';
+import FriendRequestsScreen from './screens/friendRequests';
+import PostScreen from './screens/Post';
+import MyPosts from './screens/myPosts';
+import EditPostScreen from './screens/editPost';
+import MyDrafts from './screens/draftPosts';
+import FriendPosts from './screens/friendPosts';
 
 //Creating stack navigator (main navigation for app)
 const Stack = createStackNavigator();
@@ -51,64 +51,64 @@ class App extends Component {
         >
           <Stack.Screen
             name="Login"
-            component={loginScreen}
+            component={LoginScreen}
           />
           <Stack.Screen
             name="Home"
-            component={homeScreen}
+            component={HomeScreen}
             options={{ headerShown: false }}
           />
           <Stack.Screen
             name="Register"
-            component={registerScreen}
+            component={RegisterScreen}
           />
           <Stack.Screen
             name="Profile"
-            component={profileScreen}
+            component={ProfileScreen}
           />
           <Stack.Screen
             name="Update Profile"
-            component={updateProfile}
+            component={UpdateProfile}
           />
           <Stack.Screen
             name="Search"
-            component={searchScreen}
+            component={SearchScreen}
           />
           <Stack.Screen
             name="otherProfile"
-            component={otherProfileScreen}
+            component={OtherProfileScreen}
           />
           <Stack.Screen
             name="uploadPhoto"
-            component={updatePictureScreen}
+            component={UpdatePictureScreen}
           />
           <Stack.Screen
             name="friendsList"
-            component={friendListScreen}
+            component={FriendListScreen}
           />
           <Stack.Screen
             name="friendRequests"
-            component={friendRequestsScreen}
+            component={FriendRequestsScreen}
           />
           <Stack.Screen
             name="Write a post"
-            component={postScreen}
+            component={PostScreen}
           />
           <Stack.Screen
             name="Posts"
-            component={myPosts}
+            component={MyPosts}
           />
           <Stack.Screen
             name="Edit your post"
-            component={editPostScreen}
+            component={EditPostScreen}
           />
           <Stack.Screen
             name="My drafts"
-            component={myDrafts}
+            component={MyDrafts}
           />
           <Stack.Screen
             name='Friends posts'
-            component={friendPosts}
+            component={FriendPosts}
           />
         </Stack.Navigator>
       </NavigationContainer>

@@ -5,11 +5,7 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-// TO-DO list for this screen.
-// 1. Implement some kind of scroll view (week 3 lab sheet), to scroll through posts
-// 2. Posting to an API
-
-class homeScreen extends Component {
+class HomeScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -318,4 +314,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default homeScreen;
+export default HomeScreen;

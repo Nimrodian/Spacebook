@@ -7,9 +7,7 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Camera } from 'expo-camera';
 
-// JOE MAKE SURE TO PROPERLY READ UP ON ASHES VERSION IF DIDMOUNT ETC. https://github.com/ash-williams/expo-week3-lecture-demos/blob/master/async-storage/components/login.js
-
-class updatePictureScreen extends Component {
+class UpdatePictureScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -191,4 +189,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default updatePictureScreen;
+export default UpdatePictureScreen;

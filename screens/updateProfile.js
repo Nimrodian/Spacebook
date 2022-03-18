@@ -10,7 +10,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 // 1. Implement some kind of scroll view (week 3 lab sheet), to scroll through posts
 // 2. Posting to an API
 
-class updateProfile extends Component {
+class UpdateProfile extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -178,4 +178,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default updateProfile;
+export default UpdateProfile;
